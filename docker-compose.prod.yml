@@ -1,0 +1,142 @@
+# Production compose file — see docs/DEPLOY_VPS.md for the full walkthrough.
+#
+# IMPORTANT: always run this with an explicit --env-file, since Compose's
+# own ${VAR} substitution inside this YAML (e.g. ${TURN_SHARED_SECRET} below)
+# only ever reads a file literally named `.env` unless told otherwise — the
+# per-service `env_file:` key below is a *separate* mechanism that only
+# injects vars into each container's runtime environment, it does not
+# drive substitution in this file:
+#
+#   docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build
+#
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-furoftheweak}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: ${POSTGRES_DB:-furoftheweak}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # No published port — only reachable from other containers on this
+    # compose network, unlike the dev file which exposes 5432 to the host.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-furoftheweak}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    # No published port — see postgres's note above.
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/backend.Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://furoftheweak:change-me@postgres:5432/furoftheweak}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+    volumes:
+      - backend_uploads:/app/uploads
+    # No bind-mounted source (code is baked into the image) and no
+    # published port — only reachable through nginx.
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    # No --reload (nothing to watch — source isn't bind-mounted). Multiple
+    # workers is safe here: the Devices module's signaling relay is built
+    # on Redis pub/sub specifically so it works across processes, not just
+    # within one (see app/services/device_signaling_service.py).
+    command: >
+      sh -c "alembic upgrade head &&
+             python -m scripts.seed &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2"
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: ../worker/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://furoftheweak:change-me@postgres:5432/furoftheweak}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+    volumes:
+      - backend_uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_started
+
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx.prod.Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./nginx/certbot/conf:/etc/letsencrypt:ro
+      - ./nginx/certbot/www:/var/www/certbot:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+
+  # TURN/STUN relay for the Devices module. Browsers connect to this
+  # directly (not proxied through nginx), so TURN_SERVER_URL in
+  # .env.production must point at this host's real public domain/IP, not
+  # "localhost". See docs/DEVICE_CONTROL_PROTOCOL.md.
+  coturn:
+    image: coturn/coturn:latest
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    ports:
+      - "3478:3478/udp"
+      - "3478:3478/tcp"
+      - "49152-49252:49152-49252/udp"
+    command: >
+      turnserver
+        --listening-port=3478
+        --min-port=49152 --max-port=49252
+        --use-auth-secret
+        --static-auth-secret=${TURN_SHARED_SECRET:-change-me}
+        --realm=${TURN_REALM:-furoftheweak.local}
+        --no-cli
+
+  # Requests/renews the Let's Encrypt certificate nginx serves. The initial
+  # certificate is issued by scripts/init-letsencrypt.sh (nginx can't start
+  # with a TLS server block pointing at a cert that doesn't exist yet); this
+  # service just keeps it renewed afterwards.
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./nginx/certbot/conf:/etc/letsencrypt
+      - ./nginx/certbot/www:/var/www/certbot
+    entrypoint: >
+      sh -c "trap exit TERM; while :; do certbot renew; sleep 12h; done"
+
+volumes:
+  postgres_data:
+  redis_data:
+  backend_uploads:

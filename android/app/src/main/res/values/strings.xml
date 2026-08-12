@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">FurOfTheWeak Device</string>
+
+    <string name="setup_title">Sunucu Adresi</string>
+    <string name="setup_hint">https://xxxx.trycloudflare.com</string>
+    <string name="setup_continue">Devam Et</string>
+    <string name="setup_invalid_url">Geçerli bir http:// veya https:// adresi gir</string>
+
+    <string name="pairing_title">Cihazı Eşleştir</string>
+    <string name="pairing_device_name_hint">Cihaz adı</string>
+    <string name="pairing_code_hint">8 haneli kod (büyük/küçük harfe duyarlı)</string>
+    <string name="pairing_button">Eşleştir</string>
+    <string name="pairing_invalid_code">Cihaz adı ve kodu gir</string>
+    <string name="pairing_failed">Eşleştirme başarısız — kod yanlış veya süresi dolmuş olabilir</string>
+
+    <string name="home_paired_as">Eşleşen cihaz</string>
+    <string name="home_sharing_label">Ekran paylaşımını aç</string>
+    <string name="home_unpair">Eşleşmeyi kaldır</string>
+
+    <string name="control_notification_channel_name">Cihaz Kontrolü</string>
+    <string name="control_notification_title">Ekran paylaşımı etkin</string>
+    <string name="control_notification_text">FurOfTheWeak web panelinden bu cihaz görüntüleniyor/kontrol ediliyor</string>
+
+    <string name="accessibility_service_description">FurOfTheWeak web panelinden gelen dokunma/kaydırma komutlarını bu cihazda uygulayabilmek için gereklidir. Sadece aktif bir kontrol oturumu sırasında kullanılır.</string>
+    <string name="accessibility_prompt_title">Erişilebilirlik izni gerekli</string>
+    <string name="accessibility_prompt_message">Uzaktan dokunma/kontrol için Ayarlar &gt; Erişilebilirlik bölümünden "FurOfTheWeak Device" servisini açman gerekiyor.</string>
+    <string name="accessibility_prompt_open_settings">Ayarları Aç</string>
+    <string name="common_cancel">Vazgeç</string>
+</resources>

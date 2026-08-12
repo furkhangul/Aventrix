@@ -1,0 +1,145 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-furoftheweak}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: ${POSTGRES_DB:-furoftheweak}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-furoftheweak}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/backend.Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://furoftheweak:change-me@postgres:5432/furoftheweak}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+    volumes:
+      - ./backend:/app
+      - backend_uploads:/app/uploads
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >
+      sh -c "alembic upgrade head &&
+             python -m scripts.seed &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: ../worker/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://furoftheweak:change-me@postgres:5432/furoftheweak}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+    volumes:
+      - ./backend:/app
+      - backend_uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/frontend.Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # IMPORTANT: anything prefixed VITE_ gets inlined into the BROWSER
+      # bundle by Vite — never put a docker-internal hostname in a VITE_*
+      # var, the browser can't resolve it. Leave this empty so the app's
+      # own fetch calls stay relative (same-origin), correctly reaching
+      # whichever server fronted the browser (nginx on :8080, or this dev
+      # server's own proxy on :5173).
+      VITE_API_BASE_URL: ""
+      # Vite dev server's OWN /api, /t, /uploads proxy target (Node-side
+      # only, never sent to the browser) — must be the docker-network
+      # hostname, not localhost (which inside this container means "this
+      # container"). Only used when hitting :5173 directly; nginx (:8080)
+      # routes to backend_upstream itself and never uses this.
+      DEV_PROXY_TARGET: "http://backend:8000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+      - frontend
+
+  # TURN/STUN relay for the Devices (remote control) module's WebRTC
+  # connections — NAT traversal between a phone and a browser on different
+  # networks. Only matters when ENABLE_DEVICE_CONTROL=true; entirely inert
+  # otherwise. Explicit port publishing (rather than `network_mode: host`)
+  # so this works the same on Docker Desktop for Windows/Mac as on Linux —
+  # host networking isn't reliably available on the former.
+  coturn:
+    image: coturn/coturn:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3478:3478/udp"
+      - "3478:3478/tcp"
+      - "49152-49252:49152-49252/udp"
+    command: >
+      turnserver
+        --listening-port=3478
+        --min-port=49152 --max-port=49252
+        --use-auth-secret
+        --static-auth-secret=${TURN_SHARED_SECRET:-change-me}
+        --realm=${TURN_REALM:-furoftheweak.local}
+        --no-cli
+
+volumes:
+  postgres_data:
+  redis_data:
+  backend_uploads:

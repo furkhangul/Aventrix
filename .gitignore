@@ -1,0 +1,53 @@
+# Environment
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Database backups (scripts/backup-db.sh)
+backups/
+
+# Let's Encrypt certs/webroot (scripts/init-letsencrypt.sh)
+nginx/certbot/
+
+# Python
+backend/__pycache__/
+backend/**/__pycache__/
+backend/.venv/
+backend/venv/
+backend/*.egg-info/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.ruff_cache/
+backend/htmlcov/
+backend/.coverage
+
+# Node / frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+
+# Uploads (local dev avatar storage)
+backend/uploads/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Android
+android/.gradle/
+android/**/build/
+android/local.properties
+android/.cxx/
+android/captures/
+*.apk
+*.aab
+
+# Docker
+docker/volumes/
+
+# Logs
+*.log
