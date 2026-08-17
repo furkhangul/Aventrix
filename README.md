@@ -2,14 +2,18 @@
 
 **A URL intelligence & campaign management platform**, done responsibly: create tracked links, organize them into campaigns, generate QR codes, run domain/security reconnaissance, and see privacy-respecting analytics about who's clicking — with explicit visitor consent built into the core flow, not bolted on afterwards.
 
-```text
-Dashboard → Campaign → Tracking Link → /t/CODE → Consent/Password gate → Redirect
-                                                          │
-                                                          ▼
-                                            Visit recorded → IP intelligence (async) → Dashboard
-```
-
 Built as a full production-shaped SaaS: FastAPI + async SQLAlchemy backend, React + TypeScript frontend, Postgres, Redis, a background worker, and an optional companion Android app for remote device control — all containerized behind nginx.
+
+```mermaid
+flowchart LR
+    A[Dashboard] --> B[Campaign]
+    B --> C[Tracking link<br/>/t/CODE]
+    C --> D{Consent /<br/>password gate}
+    D --> E[Redirect]
+    D --> F[Visit recorded]
+    F --> G[IP intelligence<br/>async]
+    G --> A
+```
 
 ---
 
@@ -76,47 +80,45 @@ Rate limiting, security headers, CORS, a standard error envelope, structured JSO
 
 ## Architecture
 
-```text
-                          ┌────────────────────┐
-                          │      nginx          │
-                          │  (reverse proxy)     │
-                          └─────────┬───────────┘
-                    ┌────────────────┼─────────────────┐
-                    ▼                                    ▼
-          ┌───────────────────┐                ┌───────────────────┐
-          │  Frontend (Vite)   │                │  Backend (FastAPI) │
-          │  React + TS         │◄──────────────►│  async SQLAlchemy   │
-          └───────────────────┘      REST API    └─────────┬──────────┘
-                                                              │
-                                       ┌──────────────────────┼──────────────────────┐
-                                       ▼                      ▼                      ▼
-                              ┌───────────────┐     ┌─────────────────┐   ┌────────────────────┐
-                              │  PostgreSQL     │     │      Redis        │   │  Background worker   │
-                              │  (primary store) │     │ (cache/queue/rl) │   │ (emails, webhooks,   │
-                              └───────────────┘     └─────────────────┘   │  reconciliation jobs) │
-                                                                            └────────────────────┘
+```mermaid
+flowchart TB
+    NGINX[nginx — reverse proxy]
+    FE[Frontend — React + TS + Vite]
+    BE[Backend — FastAPI + async SQLAlchemy]
+    PG[(PostgreSQL<br/>primary store)]
+    REDIS[(Redis<br/>cache / queue / rate limit)]
+    WORKER[Background worker<br/>emails, webhooks, jobs]
+    EXT[[External integrations<br/>IP intel · reputation · email · domain intel<br/>all adapter-based & mockable]]
 
-                              External integrations (all adapter-based, mockable):
-                              IP intelligence · reputation · email · domain intel (DNS/WHOIS/SSL/recon)
+    NGINX --> FE
+    NGINX --> BE
+    FE <-- REST API --> BE
+    BE --> PG
+    BE --> REDIS
+    BE --> WORKER
+    WORKER --> PG
+    WORKER --> REDIS
+    BE -.-> EXT
+    WORKER -.-> EXT
 ```
 
 Backend modules under `backend/app/`:
 
 ```text
 app/
-├── api/v1/         REST endpoints (auth, campaigns, links, analytics, tracking,
-│                   qr, url_tools, security_center, api_keys, webhooks,
-│                   notifications, devices, dashboard)
-├── core/           config, DB session, settings
-├── models/         SQLAlchemy models
-├── schemas/        Pydantic request/response schemas
+├── api/v1/          REST endpoints (auth, campaigns, links, analytics, tracking,
+│                    qr, url_tools, security_center, api_keys, webhooks,
+│                    notifications, devices, dashboard)
+├── core/            config, DB session, settings
+├── models/          SQLAlchemy models
+├── schemas/         Pydantic request/response schemas
 ├── services/        business logic (one service per domain)
 ├── repositories/    data-access layer
-├── middleware/       rate limiting, security headers, error envelope
-├── security/         auth, RBAC, hashing, tokens
-├── analytics/         aggregation logic
-├── integrations/       provider adapters — ip_intelligence/, reputation/, email/, domain_intel/
-├── workers/            background job handlers
+├── middleware/      rate limiting, security headers, error envelope
+├── security/        auth, RBAC, hashing, tokens
+├── analytics/       aggregation logic
+├── integrations/    provider adapters — ip_intelligence/, reputation/, email/, domain_intel/
+├── workers/         background job handlers
 └── utils/
 ```
 
@@ -124,19 +126,20 @@ app/
 
 ```text
 FurOfTheWeak/
-├── android/          Companion Android client (device control)
-├── backend/          FastAPI application + Alembic migrations + tests
-├── frontend/          React + TypeScript + Vite SPA
-├── worker/             Background worker Dockerfile/entrypoint
-├── nginx/               Reverse proxy config (dev + production)
-├── docker/               Supporting Docker assets
-├── scripts/               dev-setup helpers, DB backup, Let's Encrypt init
-├── docs/                    SETUP / ARCHITECTURE / DATABASE / API / SECURITY /
-│                            ENVIRONMENT / DEPLOYMENT / DEPLOY_VPS / CONTRIBUTING /
-│                            DEVICE_CONTROL_PROTOCOL
-├── docker-compose.yml        Development stack
-├── docker-compose.prod.yml    Production stack
-└── .env.example                 Every configurable environment variable
+├── android/       companion Android client (device control)
+├── backend/       FastAPI application + Alembic migrations + tests
+├── frontend/      React + TypeScript + Vite SPA
+├── worker/        background worker Dockerfile/entrypoint
+├── nginx/         reverse proxy config (dev + production)
+├── docker/        supporting Docker assets
+├── scripts/       dev-setup helpers, DB backup, Let's Encrypt init
+├── docs/          SETUP, ARCHITECTURE, DATABASE, API, SECURITY,
+│                  ENVIRONMENT, DEPLOYMENT, DEPLOY_VPS, CONTRIBUTING,
+│                  DEVICE_CONTROL_PROTOCOL
+├── docker-compose.yml       development stack
+├── docker-compose.prod.yml  production stack
+├── LICENSE
+└── .env.example   every configurable environment variable
 ```
 
 ## Tech stack
@@ -223,4 +226,4 @@ See [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) for the complete built-vs-d
 
 ## License
 
-No license file is currently published in this repository — all rights reserved by the author unless stated otherwise. Contact the maintainer before reuse or redistribution.
+Released under the [MIT License](./LICENSE) — see the file for the full text.
