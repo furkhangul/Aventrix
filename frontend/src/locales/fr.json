@@ -50,9 +50,8 @@
     "campaigns": "Campagnes",
     "links": "Liens",
     "analytics": "Analytique",
-    "qrCodes": "Codes QR",
-    "urlTools": "Outils URL",
-    "security": "Sécurité",
+    "urlTools": "Solutions URL",
+    "security": "Reconnaissance d'URL",
     "api": "API",
     "webhooks": "Webhooks",
     "notifications": "Notifications",
@@ -391,8 +390,8 @@
     "logoUploadFailed": "Impossible d'importer le logo"
   },
   "urlTools": {
-    "title": "Outils URL",
-    "subtitle": "Encodez/décodez, créez des liens UTM et examinez le comportement réel d'une URL.",
+    "title": "Solutions URL",
+    "subtitle": "Encodez/décodez des URLs, créez des liens taggés UTM, retracez pas à pas où une adresse redirige réellement, et générez des QR codes personnalisables à partir de vos liens.",
     "tabEncoder": "Encoder/Décoder",
     "tabUtm": "Générateur UTM",
     "tabAnalyzer": "Analyseur d'URL",
@@ -402,7 +401,8 @@
       "inputLabel": "Texte ou URL",
       "encoded": "Encodé",
       "decoded": "Décodé",
-      "invalidInput": "Entrée encodée invalide"
+      "invalidInput": "Entrée encodée invalide",
+      "description": "Convertit les caractères spéciaux d'une URL — espaces, lettres accentuées, & et ? — en encodage pourcentage (ex. %20), et décode un texte déjà encodé pour le rendre lisible. Utilisez-le pour vérifier qu'un lien est correctement encodé avant de le coller dans un formulaire, une requête API ou un QR code, ou pour découvrir où mène réellement un lien à l'apparence chiffrée que vous avez reçu."
     },
     "utm": {
       "title": "Générateur UTM",
@@ -412,7 +412,8 @@
       "campaign": "Campagne",
       "term": "Terme",
       "content": "Contenu",
-      "generatedUrl": "URL générée"
+      "generatedUrl": "URL générée",
+      "description": "Ajoute automatiquement à votre URL de destination les paramètres de suivi reconnus par Google Analytics et d'autres outils d'analyse — utm_source, utm_medium, utm_campaign, etc. Vous permet de distinguer clairement dans vos rapports si un lien a été partagé sur Instagram, dans une newsletter ou dans une publicité, et de quelle campagne il provient — la méthode standard pour mesurer la performance marketing."
     },
     "analyzer": {
       "urlPlaceholder": "https://example.com",
@@ -425,18 +426,21 @@
       "contentType": "Type de contenu",
       "unknown": "inconnu",
       "redirects": "{{count}} redirection(s)",
-      "couldNotAnalyze": "Impossible d'analyser cette URL"
+      "couldNotAnalyze": "Impossible d'analyser cette URL",
+      "toolDescription": "Envoie une véritable requête à l'adresse saisie et affiche le code de statut HTTP obtenu, le titre de la page, la meta description, le type de contenu et le nombre de redirections. Utilisez-le pour vérifier qu'un lien fonctionne réellement, arrive sur la bonne page, et voir comment il apparaîtra une fois partagé sur les réseaux sociaux avant de l'envoyer."
     },
     "redirects": {
       "checkChain": "Vérifier la chaîne",
       "checking": "Vérification…",
       "followingRedirects": "Suivi des redirections…",
-      "couldNotCheck": "Impossible de vérifier cette URL"
-    }
+      "couldNotCheck": "Impossible de vérifier cette URL",
+      "description": "Suit pas à pas toute la chaîne de redirections cachée derrière une URL, en listant le code de statut, la destination et la durée de chaque saut. Utilisez-le pour voir exactement par quelles adresses un lien raccourci ou partagé vous fait discrètement passer, repérer les boucles de redirection et vérifier la fiabilité d'un lien."
+    },
+    "tabQr": "Générateur de QR code"
   },
   "security": {
-    "title": "Centre de sécurité",
-    "subtitle": "Analysez le certificat SSL, les enregistrements DNS, l'enregistrement WHOIS, les en-têtes de sécurité et la réputation d'un domaine.",
+    "title": "Reconnaissance d'URL",
+    "subtitle": "Analysez les enregistrements DNS, les sous-domaines, l'IP/ASN, le certificat SSL/TLS, les en-têtes HTTP, les cookies, les technologies utilisées, robots.txt/sitemap et la réputation d'un domaine.",
     "domainPlaceholder": "example.com",
     "scan": "Analyser",
     "scanning": "Analyse en cours…",
@@ -464,7 +468,69 @@
     "scannedAt": "Analysé le {{date}}",
     "historyTitle": "Historique des analyses",
     "noScansYet": "Aucune analyse pour l'instant",
-    "noScansDescription": "Lancez votre première analyse de domaine ci-dessus."
+    "noScansDescription": "Lancez votre première analyse de domaine ci-dessus.",
+    "ipInfoTitle": "IP / ASN",
+    "ipAddress": "Adresse IP",
+    "ipAsn": "ASN",
+    "ipOrg": "Organisation",
+    "ipLocation": "Localisation",
+    "ipInfoUnavailable": "Informations IP indisponibles",
+    "subdomainsTitle": "Sous-domaines",
+    "subdomainsHint": "Découverts passivement via les journaux de transparence des certificats",
+    "noSubdomainsFound": "Aucun sous-domaine trouvé",
+    "subdomainsCount": "{{count}} sous-domaines trouvés",
+    "dnsPropagationTitle": "Propagation DNS",
+    "dnsPropagationStatus": "Statut",
+    "dnsPropagationConsistent": "Cohérent entre les résolveurs",
+    "dnsPropagationInconsistent": "Incohérent entre les résolveurs",
+    "dnsPropagationUnavailable": "Données de propagation DNS indisponibles",
+    "cookiesTitle": "Vérification des cookies",
+    "noCookiesFound": "Aucun cookie défini sur la page d'accueil",
+    "cookieNoFlags": "Aucun indicateur de sécurité",
+    "techTitle": "Technologies détectées",
+    "noTechDetected": "Aucune signature technologique détectée",
+    "robotsTitle": "robots.txt / sitemap",
+    "robotsFound": "robots.txt trouvé",
+    "sitemapFound": "Sitemap trouvé",
+    "sitemapUrlCount": "URLs dans le sitemap",
+    "disallowRulesTitle": "Règles Disallow",
+    "noDisallowRules": "Aucune règle Disallow",
+    "findingsTitle": "Constatations",
+    "findingSeverity": {
+      "high": "Élevée",
+      "medium": "Moyenne",
+      "low": "Faible",
+      "info": "Info"
+    },
+    "findingCodes": {
+      "site_unreachable": "Le site n'est pas accessible via HTTPS",
+      "missing_header": "En-tête de sécurité manquant : {{header}}",
+      "no_valid_cert": "Aucun certificat SSL/TLS valide trouvé",
+      "cert_expired": "Le certificat SSL a expiré",
+      "cert_expiring_soon": "Le certificat SSL expire dans {{days}} jour(s)",
+      "cert_expiring": "Le certificat SSL expire dans {{days}} jour(s)",
+      "reputation_malicious": "Ce domaine est signalé comme malveillant",
+      "reputation_suspicious": "Ce domaine est signalé comme suspect",
+      "whois_unavailable": "Les données WHOIS n'ont pas pu être récupérées",
+      "dns_propagation_inconsistent": "Les enregistrements DNS sont incohérents entre les résolveurs publics",
+      "cookie_flags": "Il manque {{count}} indicateur(s) de sécurité au cookie '{{name}}'",
+      "no_sitemap": "robots.txt trouvé mais aucun sitemap détecté",
+      "many_subdomains": "{{count}} sous-domaines découverts — vérifiez votre surface d'attaque",
+      "no_issues_found": "Aucun problème détecté"
+    },
+    "downloadPdf": "Télécharger le rapport PDF",
+    "generatingPdf": "Génération…",
+    "pdf": {
+      "title": "Rapport de sécurité / OSINT",
+      "generatedAt": "Généré le {{date}}",
+      "sslIssuer": "Émetteur",
+      "sslProtocol": "Protocole",
+      "sslExpires": "Expire",
+      "whoisRegistrar": "Registraire",
+      "whoisCreated": "Créé",
+      "whoisExpires": "Expire"
+    },
+    "viewDetails": "Voir les détails"
   },
   "apiKeys": {
     "title": "API",

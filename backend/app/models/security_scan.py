@@ -30,6 +30,16 @@ class SecurityScan(UUIDPrimaryKeyMixin, Base):
     headers_info: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
     reputation_info: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
 
+    # Recon / OSINT extensions (spec: subdomains, IP/ASN, cookies, tech
+    # fingerprint, robots/sitemap, DNS propagation, aggregated findings).
+    ip_info: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
+    subdomains: Mapped[list | None] = mapped_column(JSONType, nullable=True)
+    dns_propagation: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
+    cookie_info: Mapped[list | None] = mapped_column(JSONType, nullable=True)
+    tech_info: Mapped[list | None] = mapped_column(JSONType, nullable=True)
+    robots_info: Mapped[dict | None] = mapped_column(JSONType, nullable=True)
+    findings: Mapped[list | None] = mapped_column(JSONType, nullable=True)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), index=True, nullable=False
     )

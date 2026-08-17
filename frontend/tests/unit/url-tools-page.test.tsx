@@ -5,12 +5,13 @@ import { UrlToolsPage } from "@/pages/url-tools-page";
 import { renderWithProviders } from "../test-utils";
 
 describe("UrlToolsPage", () => {
-  it("renders all four tool tabs", () => {
+  it("renders all five tool tabs, including QR codes merged in from the old QR page", () => {
     renderWithProviders(<UrlToolsPage />);
     expect(screen.getByRole("tab", { name: "Encode/Decode" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "UTM Builder" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "URL Analyzer" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "Redirect Checker" })).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: "QR Code Generator" })).toBeInTheDocument();
   });
 
   it("encodes and decodes text entirely client-side, with no network calls", async () => {

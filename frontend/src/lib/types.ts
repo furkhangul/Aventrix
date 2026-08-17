@@ -210,6 +210,55 @@ export interface ReputationInfo {
   provider: string;
 }
 
+export interface DomainIpInfo {
+  ip_address: string;
+  country: string | null;
+  country_code: string | null;
+  region: string | null;
+  city: string | null;
+  isp: string | null;
+  asn: string | null;
+  organization: string | null;
+  hostname: string | null;
+  is_hosting: TriState;
+  provider: string;
+}
+
+export interface DnsPropagationInfo {
+  resolvers: Record<string, string[]>;
+  consistent: boolean;
+}
+
+export interface CookieFinding {
+  name: string;
+  secure: boolean;
+  http_only: boolean;
+  same_site: string | null;
+  issues: string[];
+}
+
+export interface TechFinding {
+  category: string;
+  technology: string;
+  detected_via: "header" | "cookie" | "body";
+}
+
+export interface RobotsInfo {
+  robots_found: boolean;
+  disallow_rules: string[];
+  sitemap_found: boolean;
+  sitemap_url: string | null;
+  sitemap_url_count: number | null;
+}
+
+export type FindingSeverity = "high" | "medium" | "low" | "info";
+
+export interface SecurityFinding {
+  severity: FindingSeverity;
+  code: string;
+  params: Record<string, string | number>;
+}
+
 export interface SecurityScan {
   id: string;
   domain: string;
@@ -219,6 +268,13 @@ export interface SecurityScan {
   whois_info: WhoisInfo | null;
   headers_info: HeadersInfo | null;
   reputation_info: ReputationInfo | null;
+  ip_info: DomainIpInfo | null;
+  subdomains: string[] | null;
+  dns_propagation: DnsPropagationInfo | null;
+  cookie_info: CookieFinding[] | null;
+  tech_info: TechFinding[] | null;
+  robots_info: RobotsInfo | null;
+  findings: SecurityFinding[] | null;
   created_at: string;
 }
 

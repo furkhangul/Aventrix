@@ -1,17 +1,25 @@
+import asyncio
 import uuid
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
+from app.integrations.domain_intel.cookie_analysis import analyze_cookies
 from app.integrations.domain_intel.dns_lookup import lookup_dns
+from app.integrations.domain_intel.dns_propagation import check_dns_propagation
+from app.integrations.domain_intel.robots_sitemap import analyze_robots_and_sitemap
 from app.integrations.domain_intel.ssl_check import check_ssl
+from app.integrations.domain_intel.subdomain_enum import enumerate_subdomains
+from app.integrations.domain_intel.tech_detect import detect_technologies
 from app.integrations.domain_intel.whois_lookup import lookup_whois
+from app.integrations.ip_intelligence.factory import get_ip_provider_chain
 from app.integrations.reputation.factory import get_reputation_provider_chain
 from app.models.security_scan import SecurityScan
 from app.repositories.security_scan_repository import get_owned_scan
 from app.services import notification_service
 from app.services.exceptions import InvalidUrlError, NotFoundError
+from app.services.security_findings import build_findings
 from app.utils.pagination import paginate
 from app.utils.safe_fetch import UnsafeUrlError, safe_fetch, validate_hostname_for_connect
 from app.workers.queue import enqueue_webhook_event
@@ -27,6 +35,8 @@ SECURITY_HEADERS = [
     "permissions-policy",
 ]
 
+BODY_SAMPLE_CHARS = 20_000
+
 
 def _normalize_domain(raw: str) -> str:
     domain = raw.strip().lower()
@@ -36,17 +46,56 @@ def _normalize_domain(raw: str) -> str:
     return domain.split("/")[0].split(":")[0]
 
 
-async def _check_headers(domain: str) -> dict:
+async def _check_site(domain: str) -> tuple[dict, list[dict], list[dict]]:
+    """
+    Single fetch of the homepage, reused for three independent checks
+    (security headers, cookie flags, tech fingerprint) instead of hitting
+    the target three times.
+    """
     try:
         result = await safe_fetch(f"https://{domain}/", method="GET")
     except UnsafeUrlError as exc:
-        return {"reachable": False, "error": str(exc), "headers": {}}
+        return {"reachable": False, "error": str(exc), "headers": {}}, [], []
 
-    return {
+    all_headers = {key.lower(): value for key, value in result.headers.items()}
+    headers_info = {
         "reachable": True,
         "status_code": result.status_code,
-        "headers": {header: result.headers.get(header) for header in SECURITY_HEADERS},
+        "headers": {header: all_headers.get(header) for header in SECURITY_HEADERS},
     }
+
+    cookie_info = analyze_cookies(result.headers.get_list("set-cookie"))
+    body_sample = result.body[:BODY_SAMPLE_CHARS].decode("utf-8", errors="replace")
+    tech_info = detect_technologies(all_headers, [c["name"] for c in cookie_info], body_sample)
+
+    return headers_info, cookie_info, tech_info
+
+
+async def _lookup_ip_info(dns_records: dict) -> dict | None:
+    candidates = dns_records.get("A") or dns_records.get("AAAA") or []
+    if not candidates:
+        return None
+    ip_address = candidates[0]
+
+    for provider in get_ip_provider_chain():
+        if not provider.is_configured:
+            continue
+        result = await provider.lookup(ip_address)
+        if result:
+            return {
+                "ip_address": ip_address,
+                "country": result.country,
+                "country_code": result.country_code,
+                "region": result.region,
+                "city": result.city,
+                "isp": result.isp,
+                "asn": result.asn,
+                "organization": result.organization,
+                "hostname": result.hostname,
+                "is_hosting": result.is_hosting,
+                "provider": result.provider,
+            }
+    return None
 
 
 def _score_headers(headers_info: dict) -> int:
@@ -95,10 +144,21 @@ async def run_scan(db: AsyncSession, *, user_id: uuid.UUID, domain: str) -> Secu
     except UnsafeUrlError as exc:
         raise InvalidUrlError(str(exc))
 
-    dns_records = await lookup_dns(domain)
-    whois_info = await lookup_whois(domain)
-    ssl_info = await check_ssl(domain)
-    headers_info = await _check_headers(domain)
+    # Independent network calls run concurrently — none of these depend on
+    # each other's results, so gathering them keeps total scan time close
+    # to the slowest single check instead of their sum.
+    dns_records, whois_info, ssl_info, site_result, subdomains, dns_propagation, robots_info = await asyncio.gather(
+        lookup_dns(domain),
+        lookup_whois(domain),
+        check_ssl(domain),
+        _check_site(domain),
+        enumerate_subdomains(domain),
+        check_dns_propagation(domain),
+        analyze_robots_and_sitemap(domain),
+    )
+    headers_info, cookie_info, tech_info = site_result
+
+    ip_info = await _lookup_ip_info(dns_records)
 
     reputation_info = None
     for provider in get_reputation_provider_chain():
@@ -110,6 +170,16 @@ async def run_scan(db: AsyncSession, *, user_id: uuid.UUID, domain: str) -> Secu
             break
 
     score = _compute_score(headers_info, ssl_info, reputation_info)
+    findings = build_findings(
+        headers_info=headers_info,
+        ssl_info=ssl_info,
+        whois_info=whois_info,
+        reputation_info=reputation_info,
+        dns_propagation=dns_propagation,
+        cookie_info=cookie_info,
+        robots_info=robots_info,
+        subdomains=subdomains,
+    )
 
     scan = SecurityScan(
         user_id=user_id,
@@ -120,6 +190,13 @@ async def run_scan(db: AsyncSession, *, user_id: uuid.UUID, domain: str) -> Secu
         whois_info=whois_info,
         headers_info=headers_info,
         reputation_info=reputation_info,
+        ip_info=ip_info,
+        subdomains=subdomains,
+        dns_propagation=dns_propagation,
+        cookie_info=cookie_info,
+        tech_info=tech_info,
+        robots_info=robots_info,
+        findings=findings,
     )
     db.add(scan)
     await db.commit()

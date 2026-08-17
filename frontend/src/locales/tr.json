@@ -50,9 +50,8 @@
     "campaigns": "Projeler",
     "links": "Bağlantılar",
     "analytics": "Analitik",
-    "qrCodes": "QR Kodları",
-    "urlTools": "URL Araçları",
-    "security": "Güvenlik",
+    "urlTools": "URL Çözümleri",
+    "security": "URL Bilgi Toplama",
     "api": "API",
     "webhooks": "Webhook'lar",
     "notifications": "Bildirimler",
@@ -488,8 +487,8 @@
     "logoUploadFailed": "Logo yüklenemedi"
   },
   "urlTools": {
-    "title": "URL Araçları",
-    "subtitle": "URL'leri kodla/çöz, UTM etiketli bağlantılar oluştur, bir adresin gerçekte nereye yönlendirdiğini adım adım incele.",
+    "title": "URL Çözümleri",
+    "subtitle": "URL'leri kodla/çöz, UTM etiketli bağlantılar oluştur, bir adresin gerçekte nereye yönlendirdiğini adım adım incele ve bağlantılarından özelleştirilebilir QR kodları üret.",
     "tabEncoder": "Kodla/Çöz",
     "tabUtm": "UTM Oluşturucu",
     "tabAnalyzer": "URL Analizcisi",
@@ -499,7 +498,8 @@
       "inputLabel": "Metin veya URL",
       "encoded": "Kodlanmış",
       "decoded": "Çözülmüş",
-      "invalidInput": "Geçersiz kodlanmış girdi"
+      "invalidInput": "Geçersiz kodlanmış girdi",
+      "description": "URL'lerin içindeki boşluk, Türkçe karakter, & ve ? gibi özel karakterleri yüzde-kodlamaya (percent-encoding, örn. %20) çevirir; aynı şekilde kodlanmış bir metni de geri okunabilir hâle çözer. Bir linki forma, API isteğine veya QR koda yapıştırmadan önce doğru kodlandığından emin olmak ya da elinize gelen şifreli görünümlü bir bağlantının gerçekte nereye gittiğini anlamak için kullanın."
     },
     "utm": {
       "title": "UTM Oluşturucu",
@@ -509,7 +509,8 @@
       "campaign": "Kampanya",
       "term": "Terim",
       "content": "İçerik",
-      "generatedUrl": "Oluşturulan URL"
+      "generatedUrl": "Oluşturulan URL",
+      "description": "Hedef adresinize utm_source, utm_medium, utm_campaign gibi Google Analytics'in ve diğer analiz araçlarının tanıdığı takip parametrelerini otomatik olarak ekler. Bir linki Instagram'da mı, e-posta bülteninde mi yoksa bir reklamda mı paylaştığınızı ve hangi kampanyadan geldiğini raporlarda net biçimde ayırt etmenizi sağlar — pazarlama performansını ölçmenin standart yoludur."
     },
     "analyzer": {
       "urlPlaceholder": "https://example.com",
@@ -522,18 +523,21 @@
       "contentType": "İçerik türü",
       "unknown": "bilinmiyor",
       "redirects": "{{count}} yönlendirme",
-      "couldNotAnalyze": "Bu URL analiz edilemedi"
+      "couldNotAnalyze": "Bu URL analiz edilemedi",
+      "toolDescription": "Girdiğiniz adrese gerçekten bir istek gönderir ve dönen HTTP durum kodunu, sayfa başlığını, meta açıklamasını, içerik türünü ve varsa kaç kez yönlendirildiğini gösterir. Bir linki paylaşmadan önce gerçekten çalıştığından, doğru sayfaya gittiğinden ve sosyal medyada nasıl bir başlık/özetle görüneceğinden emin olmak için kullanın."
     },
     "redirects": {
       "checkChain": "Zinciri kontrol et",
       "checking": "Kontrol ediliyor…",
       "followingRedirects": "Yönlendirmeler takip ediliyor…",
-      "couldNotCheck": "Bu URL kontrol edilemedi"
-    }
+      "couldNotCheck": "Bu URL kontrol edilemedi",
+      "description": "Bir URL'nin arkasında saklı olabilecek tüm yönlendirme (redirect) zincirini adım adım takip eder; her adımın durum kodunu, gittiği adresi ve ne kadar sürdüğünü listeler. Kısaltılmış veya sizinle paylaşılan bir linkin sizi gizlice hangi adreslerden geçirdiğini görmek, yönlendirme döngülerini tespit etmek ve linkin güvenilir olup olmadığını doğrulamak için kullanın."
+    },
+    "tabQr": "QR Kod Oluşturucu"
   },
   "security": {
-    "title": "Güvenlik Merkezi",
-    "subtitle": "Bir alan adının SSL sertifikasını, DNS kayıtlarını, WHOIS kaydını, güvenlik başlıklarını ve itibarını analiz edin.",
+    "title": "URL Bilgi Toplama",
+    "subtitle": "Bir alan adının DNS kayıtlarını, alt alan adlarını, IP/ASN bilgisini, SSL/TLS sertifikasını, HTTP başlıklarını, çerezlerini, kullandığı teknolojileri, robots.txt/sitemap yapısını ve itibarını analiz edin.",
     "domainPlaceholder": "example.com",
     "scan": "Tara",
     "scanning": "Taranıyor…",
@@ -561,7 +565,69 @@
     "scannedAt": "{{date}} tarihinde tarandı",
     "historyTitle": "Tarama geçmişi",
     "noScansYet": "Henüz tarama yok",
-    "noScansDescription": "Yukarıdan ilk alan adı taramanızı başlatın."
+    "noScansDescription": "Yukarıdan ilk alan adı taramanızı başlatın.",
+    "ipInfoTitle": "IP / ASN bilgisi",
+    "ipAddress": "IP adresi",
+    "ipAsn": "ASN",
+    "ipOrg": "Kuruluş",
+    "ipLocation": "Konum",
+    "ipInfoUnavailable": "IP istihbarat verisi alınamadı",
+    "subdomainsTitle": "Alt alan adları",
+    "subdomainsHint": "Sertifika şeffaflığı (CT) kayıtlarından pasif olarak keşfedildi",
+    "noSubdomainsFound": "Alt alan adı bulunamadı",
+    "subdomainsCount": "{{count}} alt alan adı bulundu",
+    "dnsPropagationTitle": "DNS yayılım kontrolü",
+    "dnsPropagationStatus": "Durum",
+    "dnsPropagationConsistent": "Sunucular arasında tutarlı",
+    "dnsPropagationInconsistent": "Sunucular arasında tutarsız",
+    "dnsPropagationUnavailable": "DNS yayılım verisi alınamadı",
+    "cookiesTitle": "Çerez kontrolleri",
+    "noCookiesFound": "Ana sayfa yanıtında çerez bulunamadı",
+    "cookieNoFlags": "Güvenlik bayrağı yok",
+    "techTitle": "Tespit edilen teknolojiler",
+    "noTechDetected": "Teknoloji imzası tespit edilmedi",
+    "robotsTitle": "robots.txt / sitemap",
+    "robotsFound": "robots.txt bulundu",
+    "sitemapFound": "Sitemap bulundu",
+    "sitemapUrlCount": "Sitemap içindeki URL sayısı",
+    "disallowRulesTitle": "Disallow kuralları",
+    "noDisallowRules": "Disallow kuralı yok",
+    "findingsTitle": "Bulgular",
+    "findingSeverity": {
+      "high": "Yüksek",
+      "medium": "Orta",
+      "low": "Düşük",
+      "info": "Bilgi"
+    },
+    "findingCodes": {
+      "site_unreachable": "Siteye HTTPS üzerinden ulaşılamıyor",
+      "missing_header": "Eksik güvenlik başlığı: {{header}}",
+      "no_valid_cert": "Geçerli bir SSL/TLS sertifikası bulunamadı",
+      "cert_expired": "SSL sertifikasının süresi dolmuş",
+      "cert_expiring_soon": "SSL sertifikası {{days}} gün içinde sona eriyor",
+      "cert_expiring": "SSL sertifikası {{days}} gün içinde sona eriyor",
+      "reputation_malicious": "Bu alan adı kötü amaçlı olarak işaretlenmiş",
+      "reputation_suspicious": "Bu alan adı şüpheli olarak işaretlenmiş",
+      "whois_unavailable": "WHOIS verisi alınamadı",
+      "dns_propagation_inconsistent": "DNS kayıtları genel DNS sunucuları arasında tutarsız",
+      "cookie_flags": "'{{name}}' çerezinde {{count}} güvenlik bayrağı eksik",
+      "no_sitemap": "robots.txt bulundu ancak sitemap tespit edilemedi",
+      "many_subdomains": "{{count}} alt alan adı tespit edildi — saldırı yüzeyinizi gözden geçirin",
+      "no_issues_found": "Herhangi bir sorun tespit edilmedi"
+    },
+    "downloadPdf": "PDF raporu indir",
+    "generatingPdf": "Oluşturuluyor…",
+    "pdf": {
+      "title": "Güvenlik / OSINT Raporu",
+      "generatedAt": "{{date}} tarihinde oluşturuldu",
+      "sslIssuer": "Veren",
+      "sslProtocol": "Protokol",
+      "sslExpires": "Sona erme",
+      "whoisRegistrar": "Kayıt kuruluşu",
+      "whoisCreated": "Oluşturulma",
+      "whoisExpires": "Sona erme"
+    },
+    "viewDetails": "Ayrıntıları görüntüle"
   },
   "apiKeys": {
     "title": "API",

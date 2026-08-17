@@ -50,9 +50,8 @@
     "campaigns": "活动",
     "links": "链接",
     "analytics": "分析",
-    "qrCodes": "二维码",
-    "urlTools": "URL 工具",
-    "security": "安全中心",
+    "urlTools": "URL 解决方案",
+    "security": "URL 信息收集",
     "api": "API",
     "webhooks": "Webhook",
     "notifications": "通知",
@@ -391,8 +390,8 @@
     "logoUploadFailed": "徽标上传失败"
   },
   "urlTools": {
-    "title": "URL 工具",
-    "subtitle": "编码/解码、构建 UTM 链接，并检查网址的实际行为。",
+    "title": "URL 解决方案",
+    "subtitle": "对 URL 进行编码/解码、创建带 UTM 标记的链接、逐步追踪某个地址实际跳转到哪里，并从您的链接生成可自定义的二维码。",
     "tabEncoder": "编码/解码",
     "tabUtm": "UTM 构建器",
     "tabAnalyzer": "网址分析器",
@@ -402,7 +401,8 @@
       "inputLabel": "文本或网址",
       "encoded": "编码结果",
       "decoded": "解码结果",
-      "invalidInput": "编码输入无效"
+      "invalidInput": "编码输入无效",
+      "description": "将 URL 中的特殊字符——空格、重音字母、& 和 ?——转换为百分号编码（如 %20），也可将已编码的字符串还原为可读文本。在将链接粘贴到表单、API 请求或二维码之前，用它确认编码是否正确；或者用它查看收到的、看起来像加密字符串的链接实际指向哪里。"
     },
     "utm": {
       "title": "UTM 构建器",
@@ -412,7 +412,8 @@
       "campaign": "活动",
       "term": "关键词",
       "content": "内容",
-      "generatedUrl": "生成的网址"
+      "generatedUrl": "生成的网址",
+      "description": "自动为目标 URL 添加 Google Analytics 及其他分析工具可识别的跟踪参数——utm_source、utm_medium、utm_campaign 等。让你在报告中清楚区分某个链接是通过 Instagram、邮件通讯还是广告分享的，以及来自哪个营销活动——这是衡量营销效果的标准做法。"
     },
     "analyzer": {
       "urlPlaceholder": "https://example.com",
@@ -425,18 +426,21 @@
       "contentType": "内容类型",
       "unknown": "未知",
       "redirects": "{{count}} 次重定向",
-      "couldNotAnalyze": "无法分析此网址"
+      "couldNotAnalyze": "无法分析此网址",
+      "toolDescription": "向输入的地址发送真实请求，并显示返回的 HTTP 状态码、页面标题、元描述、内容类型以及跳转次数。在分享链接前，用它确认链接确实可用、跳转到了正确的页面，并预览它在社交媒体上分享时会显示的标题和摘要。"
     },
     "redirects": {
       "checkChain": "检查重定向链",
       "checking": "正在检查…",
       "followingRedirects": "正在跟踪重定向…",
-      "couldNotCheck": "无法检查此网址"
-    }
+      "couldNotCheck": "无法检查此网址",
+      "description": "逐步追踪隐藏在某个 URL 背后的完整跳转链，列出每一跳的状态码、目标地址和耗时。用它可以准确看到一个短链接或分享链接悄悄把你带经过了哪些地址，发现跳转循环，并验证链接是否可信。"
+    },
+    "tabQr": "二维码生成器"
   },
   "security": {
-    "title": "安全中心",
-    "subtitle": "分析域名的 SSL 证书、DNS 记录、WHOIS 注册信息、安全响应头和信誉度。",
+    "title": "URL 信息收集",
+    "subtitle": "分析域名的 DNS 记录、子域名、IP/ASN 信息、SSL/TLS 证书、HTTP 响应头、Cookie、技术栈、robots.txt/站点地图以及信誉。",
     "domainPlaceholder": "example.com",
     "scan": "扫描",
     "scanning": "正在扫描…",
@@ -464,7 +468,69 @@
     "scannedAt": "扫描于 {{date}}",
     "historyTitle": "扫描历史",
     "noScansYet": "暂无扫描记录",
-    "noScansDescription": "在上方运行你的首次域名扫描。"
+    "noScansDescription": "在上方运行你的首次域名扫描。",
+    "ipInfoTitle": "IP / ASN",
+    "ipAddress": "IP 地址",
+    "ipAsn": "ASN",
+    "ipOrg": "所属组织",
+    "ipLocation": "位置",
+    "ipInfoUnavailable": "IP 情报不可用",
+    "subdomainsTitle": "子域名",
+    "subdomainsHint": "通过证书透明度日志被动发现",
+    "noSubdomainsFound": "未发现子域名",
+    "subdomainsCount": "发现 {{count}} 个子域名",
+    "dnsPropagationTitle": "DNS 传播检查",
+    "dnsPropagationStatus": "状态",
+    "dnsPropagationConsistent": "各解析服务器结果一致",
+    "dnsPropagationInconsistent": "各解析服务器结果不一致",
+    "dnsPropagationUnavailable": "DNS 传播数据不可用",
+    "cookiesTitle": "Cookie 检查",
+    "noCookiesFound": "主页响应中未设置任何 Cookie",
+    "cookieNoFlags": "无安全标志",
+    "techTitle": "检测到的技术",
+    "noTechDetected": "未检测到技术特征",
+    "robotsTitle": "robots.txt / 站点地图",
+    "robotsFound": "已找到 robots.txt",
+    "sitemapFound": "已找到站点地图",
+    "sitemapUrlCount": "站点地图中的 URL 数量",
+    "disallowRulesTitle": "Disallow 规则",
+    "noDisallowRules": "无 Disallow 规则",
+    "findingsTitle": "发现的问题",
+    "findingSeverity": {
+      "high": "高",
+      "medium": "中",
+      "low": "低",
+      "info": "信息"
+    },
+    "findingCodes": {
+      "site_unreachable": "无法通过 HTTPS 访问该站点",
+      "missing_header": "缺少安全响应头：{{header}}",
+      "no_valid_cert": "未找到有效的 SSL/TLS 证书",
+      "cert_expired": "SSL 证书已过期",
+      "cert_expiring_soon": "SSL 证书将在 {{days}} 天后过期",
+      "cert_expiring": "SSL 证书将在 {{days}} 天后过期",
+      "reputation_malicious": "该域名被标记为恶意",
+      "reputation_suspicious": "该域名被标记为可疑",
+      "whois_unavailable": "无法获取 WHOIS 数据",
+      "dns_propagation_inconsistent": "各公共解析服务器之间的 DNS 记录不一致",
+      "cookie_flags": "Cookie “{{name}}” 缺少 {{count}} 个安全标志",
+      "no_sitemap": "找到了 robots.txt，但未检测到站点地图",
+      "many_subdomains": "发现 {{count}} 个子域名 — 请检查您的攻击面",
+      "no_issues_found": "未发现问题"
+    },
+    "downloadPdf": "下载 PDF 报告",
+    "generatingPdf": "生成中…",
+    "pdf": {
+      "title": "安全 / OSINT 报告",
+      "generatedAt": "生成于 {{date}}",
+      "sslIssuer": "颁发者",
+      "sslProtocol": "协议",
+      "sslExpires": "到期时间",
+      "whoisRegistrar": "注册商",
+      "whoisCreated": "创建时间",
+      "whoisExpires": "到期时间"
+    },
+    "viewDetails": "查看详情"
   },
   "apiKeys": {
     "title": "API",

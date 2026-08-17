@@ -23,7 +23,6 @@ const CampaignDetailPage = lazy(() =>
 const LinksPage = lazy(() => import("@/pages/links-page").then((m) => ({ default: m.LinksPage })));
 const SettingsPage = lazy(() => import("@/pages/settings-page").then((m) => ({ default: m.SettingsPage })));
 const AnalyticsPage = lazy(() => import("@/pages/analytics-page").then((m) => ({ default: m.AnalyticsPage })));
-const QrCodesPage = lazy(() => import("@/pages/qr-codes-page").then((m) => ({ default: m.QrCodesPage })));
 const UrlToolsPage = lazy(() => import("@/pages/url-tools-page").then((m) => ({ default: m.UrlToolsPage })));
 const SecurityPage = lazy(() => import("@/pages/security-page").then((m) => ({ default: m.SecurityPage })));
 const ApiPage = lazy(() => import("@/pages/api-page").then((m) => ({ default: m.ApiPage })));
@@ -109,14 +108,7 @@ export function App() {
                 </Suspense>
               }
             />
-            <Route
-              path="/qr-codes"
-              element={
-                <Suspense fallback={<PageFallback />}>
-                  <QrCodesPage />
-                </Suspense>
-              }
-            />
+            <Route path="/qr-codes" element={<Navigate to="/url-tools" replace />} />
             <Route
               path="/url-tools"
               element={

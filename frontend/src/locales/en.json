@@ -50,9 +50,8 @@
     "campaigns": "Projects",
     "links": "Links",
     "analytics": "Analytics",
-    "qrCodes": "QR Codes",
-    "urlTools": "URL Tools",
-    "security": "Security",
+    "urlTools": "URL Solutions",
+    "security": "URL Reconnaissance",
     "api": "API",
     "webhooks": "Webhooks",
     "notifications": "Notifications",
@@ -488,8 +487,8 @@
     "logoUploadFailed": "Couldn't upload logo"
   },
   "urlTools": {
-    "title": "URL Tools",
-    "subtitle": "Encode/decode URLs, build UTM-tagged links, and trace step-by-step where an address actually redirects to.",
+    "title": "URL Solutions",
+    "subtitle": "Encode/decode URLs, build UTM-tagged links, trace exactly where an address redirects step by step, and generate customizable QR codes from your links.",
     "tabEncoder": "Encode/Decode",
     "tabUtm": "UTM Builder",
     "tabAnalyzer": "URL Analyzer",
@@ -499,7 +498,8 @@
       "inputLabel": "Text or URL",
       "encoded": "Encoded",
       "decoded": "Decoded",
-      "invalidInput": "Invalid encoded input"
+      "invalidInput": "Invalid encoded input",
+      "description": "Converts special characters in a URL — spaces, accented letters, & and ? — into percent-encoding (e.g. %20), and decodes an already-encoded string back into readable text. Use it to make sure a link is properly encoded before pasting it into a form, API request, or QR code, or to see where an encoded-looking link you received actually points."
     },
     "utm": {
       "title": "UTM Builder",
@@ -509,7 +509,8 @@
       "campaign": "Campaign",
       "term": "Term",
       "content": "Content",
-      "generatedUrl": "Generated URL"
+      "generatedUrl": "Generated URL",
+      "description": "Automatically appends the tracking parameters Google Analytics and other analytics tools recognize — utm_source, utm_medium, utm_campaign, and more — to your destination URL. Lets you clearly tell in your reports whether a link was shared on Instagram, in an email newsletter, or in an ad, and which campaign it came from — the standard way to measure marketing performance."
     },
     "analyzer": {
       "urlPlaceholder": "https://example.com",
@@ -522,18 +523,21 @@
       "contentType": "Content type",
       "unknown": "unknown",
       "redirects": "{{count}} redirect(s)",
-      "couldNotAnalyze": "Couldn't analyze this URL"
+      "couldNotAnalyze": "Couldn't analyze this URL",
+      "toolDescription": "Sends a real request to the address you enter and shows the resulting HTTP status code, page title, meta description, content type, and how many times it redirected. Use it to confirm a link actually works, lands on the right page, and see how it'll appear when shared on social media before you send it."
     },
     "redirects": {
       "checkChain": "Check chain",
       "checking": "Checking…",
       "followingRedirects": "Following redirects…",
-      "couldNotCheck": "Couldn't check this URL"
-    }
+      "couldNotCheck": "Couldn't check this URL",
+      "description": "Follows the entire redirect chain hidden behind a URL step by step, listing each hop's status code, destination, and timing. Use it to see exactly which addresses a shortened or shared link quietly routes you through, catch redirect loops, and verify a link is trustworthy."
+    },
+    "tabQr": "QR Code Generator"
   },
   "security": {
-    "title": "Security Center",
-    "subtitle": "Analyze a domain's SSL certificate, DNS records, WHOIS registration, security headers, and reputation.",
+    "title": "URL Reconnaissance",
+    "subtitle": "Analyze a domain's DNS records, subdomains, IP/ASN, SSL/TLS certificate, HTTP headers, cookies, technology stack, robots.txt/sitemap, and reputation.",
     "domainPlaceholder": "example.com",
     "scan": "Scan",
     "scanning": "Scanning…",
@@ -561,7 +565,69 @@
     "scannedAt": "Scanned {{date}}",
     "historyTitle": "Scan history",
     "noScansYet": "No scans yet",
-    "noScansDescription": "Run your first domain scan above."
+    "noScansDescription": "Run your first domain scan above.",
+    "ipInfoTitle": "IP / ASN",
+    "ipAddress": "IP address",
+    "ipAsn": "ASN",
+    "ipOrg": "Organization",
+    "ipLocation": "Location",
+    "ipInfoUnavailable": "IP intelligence unavailable",
+    "subdomainsTitle": "Subdomains",
+    "subdomainsHint": "Passively discovered via certificate transparency logs",
+    "noSubdomainsFound": "No subdomains found",
+    "subdomainsCount": "{{count}} subdomains found",
+    "dnsPropagationTitle": "DNS propagation",
+    "dnsPropagationStatus": "Status",
+    "dnsPropagationConsistent": "Consistent across resolvers",
+    "dnsPropagationInconsistent": "Inconsistent across resolvers",
+    "dnsPropagationUnavailable": "DNS propagation data unavailable",
+    "cookiesTitle": "Cookie checks",
+    "noCookiesFound": "No cookies set on the homepage response",
+    "cookieNoFlags": "No security flags",
+    "techTitle": "Technology detected",
+    "noTechDetected": "No technology signatures detected",
+    "robotsTitle": "robots.txt / sitemap",
+    "robotsFound": "robots.txt found",
+    "sitemapFound": "Sitemap found",
+    "sitemapUrlCount": "URLs in sitemap",
+    "disallowRulesTitle": "Disallow rules",
+    "noDisallowRules": "No disallow rules",
+    "findingsTitle": "Findings",
+    "findingSeverity": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "info": "Info"
+    },
+    "findingCodes": {
+      "site_unreachable": "The site is not reachable over HTTPS",
+      "missing_header": "Missing security header: {{header}}",
+      "no_valid_cert": "No valid SSL/TLS certificate was found",
+      "cert_expired": "The SSL certificate has expired",
+      "cert_expiring_soon": "The SSL certificate expires in {{days}} day(s)",
+      "cert_expiring": "The SSL certificate expires in {{days}} day(s)",
+      "reputation_malicious": "This domain is flagged as malicious",
+      "reputation_suspicious": "This domain is flagged as suspicious",
+      "whois_unavailable": "WHOIS data could not be retrieved",
+      "dns_propagation_inconsistent": "DNS records are inconsistent across public resolvers",
+      "cookie_flags": "Cookie '{{name}}' is missing {{count}} security flag(s)",
+      "no_sitemap": "robots.txt was found but no sitemap was detected",
+      "many_subdomains": "{{count}} subdomains discovered — review your attack surface",
+      "no_issues_found": "No issues found"
+    },
+    "downloadPdf": "Download PDF report",
+    "generatingPdf": "Generating…",
+    "pdf": {
+      "title": "Security / OSINT Report",
+      "generatedAt": "Generated {{date}}",
+      "sslIssuer": "Issuer",
+      "sslProtocol": "Protocol",
+      "sslExpires": "Expires",
+      "whoisRegistrar": "Registrar",
+      "whoisCreated": "Created",
+      "whoisExpires": "Expires"
+    },
+    "viewDetails": "View details"
   },
   "apiKeys": {
     "title": "API",

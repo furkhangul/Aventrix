@@ -50,9 +50,8 @@
     "campaigns": "الحملات",
     "links": "الروابط",
     "analytics": "التحليلات",
-    "qrCodes": "رموز QR",
-    "urlTools": "أدوات الروابط",
-    "security": "الأمان",
+    "urlTools": "حلول الروابط",
+    "security": "جمع معلومات الروابط",
     "api": "واجهة برمجة التطبيقات",
     "webhooks": "Webhooks",
     "notifications": "الإشعارات",
@@ -391,8 +390,8 @@
     "logoUploadFailed": "تعذّر رفع الشعار"
   },
   "urlTools": {
-    "title": "أدوات الروابط",
-    "subtitle": "قم بالترميز/فك الترميز، وأنشئ روابط UTM، وتحقق من سلوك الرابط الفعلي.",
+    "title": "حلول الروابط",
+    "subtitle": "شفّر/فك تشفير الروابط، أنشئ روابط بمعلمات UTM، تتبّع خطوة بخطوة إلى أين يُعيد التوجيه الفعلي لعنوان ما، وأنشئ رموز QR قابلة للتخصيص من روابطك.",
     "tabEncoder": "ترميز/فك ترميز",
     "tabUtm": "منشئ UTM",
     "tabAnalyzer": "محلل الروابط",
@@ -402,7 +401,8 @@
       "inputLabel": "نص أو رابط",
       "encoded": "الشكل المرمّز",
       "decoded": "الشكل المفكوك",
-      "invalidInput": "مدخل مرمّز غير صالح"
+      "invalidInput": "مدخل مرمّز غير صالح",
+      "description": "يحوّل الأحرف الخاصة في الرابط — المسافات، الأحرف المُشكّلة، & و? — إلى ترميز بالنسبة المئوية (مثل %20)، ويفك تشفير نص مُرمّز مسبقًا ليعود نصًا مقروءًا. استخدمه للتأكد من أن الرابط مُرمّز بشكل صحيح قبل لصقه في نموذج أو طلب API أو رمز QR، أو لمعرفة الوجهة الحقيقية لرابط يبدو مشفّرًا وصلك من شخص آخر."
     },
     "utm": {
       "title": "منشئ UTM",
@@ -412,7 +412,8 @@
       "campaign": "الحملة",
       "term": "المصطلح",
       "content": "المحتوى",
-      "generatedUrl": "الرابط الناتج"
+      "generatedUrl": "الرابط الناتج",
+      "description": "يضيف تلقائيًا إلى رابط الوجهة معلمات التتبّع التي يتعرف عليها Google Analytics وأدوات التحليل الأخرى — utm_source وutm_medium وutm_campaign وغيرها. يتيح لك التمييز بوضوح في تقاريرك بين مشاركة رابط على إنستغرام أو في نشرة بريدية أو في إعلان، ومن أي حملة أتى — الطريقة المعيارية لقياس أداء التسويق."
     },
     "analyzer": {
       "urlPlaceholder": "https://example.com",
@@ -425,18 +426,21 @@
       "contentType": "نوع المحتوى",
       "unknown": "غير معروف",
       "redirects": "{{count}} عملية إعادة توجيه",
-      "couldNotAnalyze": "تعذّر تحليل هذا الرابط"
+      "couldNotAnalyze": "تعذّر تحليل هذا الرابط",
+      "toolDescription": "يرسل طلبًا حقيقيًا إلى العنوان الذي تُدخله ويعرض رمز حالة HTTP الناتج وعنوان الصفحة والوصف التعريفي ونوع المحتوى وعدد مرات إعادة التوجيه إن وُجدت. استخدمه للتأكد من أن الرابط يعمل فعليًا ويصل إلى الصفحة الصحيحة، ولمعرفة شكل ظهوره عند مشاركته على وسائل التواصل الاجتماعي قبل إرساله."
     },
     "redirects": {
       "checkChain": "تحقق من السلسلة",
       "checking": "جارٍ التحقق…",
       "followingRedirects": "جارٍ تتبّع إعادة التوجيه…",
-      "couldNotCheck": "تعذّر التحقق من هذا الرابط"
-    }
+      "couldNotCheck": "تعذّر التحقق من هذا الرابط",
+      "description": "يتتبّع خطوة بخطوة سلسلة إعادة التوجيه الكاملة المخفية خلف رابط ما، ويسرد رمز الحالة والوجهة والمدة الزمنية لكل خطوة. استخدمه لترى بالضبط عبر أي عناوين يمررك رابط مختصر أو مُشارك بصمت، ولرصد حلقات إعادة التوجيه، وللتحقق من موثوقية الرابط."
+    },
+    "tabQr": "مولّد رمز QR"
   },
   "security": {
-    "title": "مركز الأمان",
-    "subtitle": "حلّل شهادة SSL وسجلات DNS وتسجيل WHOIS ورؤوس الأمان وسمعة النطاق.",
+    "title": "جمع معلومات الروابط",
+    "subtitle": "حلّل سجلات DNS والنطاقات الفرعية ومعلومات IP/ASN وشهادة SSL/TLS ورؤوس HTTP وملفات تعريف الارتباط والتقنيات المستخدمة وملف robots.txt/خريطة الموقع وسمعة النطاق.",
     "domainPlaceholder": "example.com",
     "scan": "فحص",
     "scanning": "جارٍ الفحص…",
@@ -464,7 +468,69 @@
     "scannedAt": "تم الفحص في {{date}}",
     "historyTitle": "سجل الفحوصات",
     "noScansYet": "لا توجد فحوصات بعد",
-    "noScansDescription": "شغّل فحص النطاق الأول أعلاه."
+    "noScansDescription": "شغّل فحص النطاق الأول أعلاه.",
+    "ipInfoTitle": "IP / ASN",
+    "ipAddress": "عنوان IP",
+    "ipAsn": "رقم النظام المستقل (ASN)",
+    "ipOrg": "المؤسسة",
+    "ipLocation": "الموقع",
+    "ipInfoUnavailable": "معلومات IP غير متوفرة",
+    "subdomainsTitle": "النطاقات الفرعية",
+    "subdomainsHint": "تم اكتشافها بشكل سلبي عبر سجلات شفافية الشهادات",
+    "noSubdomainsFound": "لم يتم العثور على نطاقات فرعية",
+    "subdomainsCount": "تم العثور على {{count}} نطاق فرعي",
+    "dnsPropagationTitle": "انتشار DNS",
+    "dnsPropagationStatus": "الحالة",
+    "dnsPropagationConsistent": "متسق عبر خوادم الحل",
+    "dnsPropagationInconsistent": "غير متسق عبر خوادم الحل",
+    "dnsPropagationUnavailable": "بيانات انتشار DNS غير متوفرة",
+    "cookiesTitle": "فحص ملفات تعريف الارتباط",
+    "noCookiesFound": "لم يتم تعيين أي ملفات تعريف ارتباط في استجابة الصفحة الرئيسية",
+    "cookieNoFlags": "لا توجد أعلام أمان",
+    "techTitle": "التقنيات المكتشفة",
+    "noTechDetected": "لم يتم اكتشاف أي بصمات تقنية",
+    "robotsTitle": "robots.txt / خريطة الموقع",
+    "robotsFound": "تم العثور على robots.txt",
+    "sitemapFound": "تم العثور على خريطة الموقع",
+    "sitemapUrlCount": "عدد الروابط في خريطة الموقع",
+    "disallowRulesTitle": "قواعد Disallow",
+    "noDisallowRules": "لا توجد قواعد Disallow",
+    "findingsTitle": "النتائج",
+    "findingSeverity": {
+      "high": "عالية",
+      "medium": "متوسطة",
+      "low": "منخفضة",
+      "info": "معلومة"
+    },
+    "findingCodes": {
+      "site_unreachable": "لا يمكن الوصول إلى الموقع عبر HTTPS",
+      "missing_header": "رأس أمان مفقود: {{header}}",
+      "no_valid_cert": "لم يتم العثور على شهادة SSL/TLS صالحة",
+      "cert_expired": "انتهت صلاحية شهادة SSL",
+      "cert_expiring_soon": "ستنتهي صلاحية شهادة SSL خلال {{days}} يوم",
+      "cert_expiring": "ستنتهي صلاحية شهادة SSL خلال {{days}} يوم",
+      "reputation_malicious": "تم تصنيف هذا النطاق على أنه ضار",
+      "reputation_suspicious": "تم تصنيف هذا النطاق على أنه مشبوه",
+      "whois_unavailable": "تعذر استرداد بيانات WHOIS",
+      "dns_propagation_inconsistent": "سجلات DNS غير متسقة عبر خوادم الحل العامة",
+      "cookie_flags": "يفتقد ملف تعريف الارتباط '{{name}}' إلى {{count}} من أعلام الأمان",
+      "no_sitemap": "تم العثور على robots.txt لكن لم يتم اكتشاف خريطة موقع",
+      "many_subdomains": "تم اكتشاف {{count}} نطاق فرعي — راجع سطح الهجوم لديك",
+      "no_issues_found": "لم يتم العثور على أي مشاكل"
+    },
+    "downloadPdf": "تنزيل تقرير PDF",
+    "generatingPdf": "جارٍ الإنشاء…",
+    "pdf": {
+      "title": "تقرير الأمان / OSINT",
+      "generatedAt": "تم الإنشاء في {{date}}",
+      "sslIssuer": "الجهة المصدرة",
+      "sslProtocol": "البروتوكول",
+      "sslExpires": "تنتهي الصلاحية",
+      "whoisRegistrar": "المسجل",
+      "whoisCreated": "تاريخ الإنشاء",
+      "whoisExpires": "تنتهي الصلاحية"
+    },
+    "viewDetails": "عرض التفاصيل"
   },
   "apiKeys": {
     "title": "واجهة برمجة التطبيقات",
