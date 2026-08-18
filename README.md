@@ -14,7 +14,6 @@ flowchart LR
     F --> G[IP intelligence<br/>async]
     G --> A
 ```
-
 ---
 
 ## Table of contents
