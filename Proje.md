@@ -230,7 +230,6 @@ Profesyonel authentication sistemi oluştur.
 * Login history
 
 Roller:
-
 ```text
 SUPER_ADMIN
 ADMIN
@@ -267,7 +266,6 @@ Top Referrers
 ```
 
 Grafikler:
-
 * Günlük ziyaret
 * Haftalık ziyaret
 * Aylık ziyaret
@@ -325,7 +323,6 @@ Kurallar:
 * UTM parameters
 
 ---
-
 # 9. GÖRSEL KAMPANYA SİSTEMİ
 
 Kullanıcı bir görsel yükleyebilsin.
@@ -357,7 +354,6 @@ HTML export:
 üretsin.
 
 Kullanıcı:
-
 * HTML kodunu kopyalayabilsin
 * Markdown kodunu kopyalayabilsin
 * URL'yi kopyalayabilsin
@@ -550,7 +546,7 @@ CTR
 Top Country
 Top Device
 Top Browser
-Timeline
+Time Line
 ```
 
 göster.
