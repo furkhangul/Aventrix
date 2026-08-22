@@ -14,12 +14,18 @@ flowchart LR
     F --> G[IP intelligence<br/>async]
     G --> A
 ```
+
+<p align="center">
+  <img src="docs/screenshots/04-dashboard.png" alt="Aventrix dashboard" width="860">
+</p>
+
 ---
 
 ## Table of contents
 
 - [Highlights](#highlights)
 - [Feature tour](#feature-tour)
+- [Screenshots](#screenshots)
 - [Architecture](#architecture)
 - [Project structure](#project-structure)
 - [Tech stack](#tech-stack)
@@ -76,6 +82,95 @@ A companion Android client (`android/`) pairs with the platform to enable AirDro
 
 ### Security baseline (platform-wide)
 Rate limiting, security headers, CORS, a standard error envelope, structured JSON logs, an audit log, IDOR-safe ownership checks throughout, and SSRF-hardened outbound fetching everywhere a user-supplied URL is fetched server-side.
+
+## Screenshots
+
+Every screen below is a real capture of the running app (light and dark theme, empty states and populated ones) — not mockups.
+
+### Sign-in & account
+
+<table>
+<tr>
+<td width="33%"><img src="docs/screenshots/01-login.png" alt="Login page"><br><sub>Login</sub></td>
+<td width="33%"><img src="docs/screenshots/02-register.png" alt="Register page"><br><sub>Create an account</sub></td>
+<td width="33%"><img src="docs/screenshots/03-forgot-password.png" alt="Forgot password page"><br><sub>Password reset</sub></td>
+</tr>
+</table>
+
+### Dashboard — light & dark
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/04-dashboard.png" alt="Dashboard, light theme"><br><sub>Light theme</sub></td>
+<td width="50%"><img src="docs/screenshots/20-dashboard-dark.png" alt="Dashboard, dark theme"><br><sub>Dark theme</sub></td>
+</tr>
+</table>
+
+A summary across every project: total links, visits, unique visitors, today's visits, active projects, and a uniqueness ratio, plus a visit trend chart and top countries/devices/browsers/referrers.
+
+### Projects — from empty state to a live campaign
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/05-projects-empty.png" alt="Projects page, empty state"><br><sub>1. Empty state — first-run guidance</sub></td>
+<td width="50%"><img src="docs/screenshots/06-projects-create.png" alt="Create project dialog"><br><sub>2. Create a project</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/07-projects-list.png" alt="Projects list with a campaign"><br><sub>3. The new project, in the list</sub></td>
+<td width="50%"><img src="docs/screenshots/08-project-detail.png" alt="Project detail page"><br><sub>4. Project detail — performance at a glance</sub></td>
+</tr>
+</table>
+
+### Links — creating a tracked link end to end
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/09-links-empty.png" alt="Links page, empty state"><br><sub>1. Empty state</sub></td>
+<td width="50%"><img src="docs/screenshots/10-links-create.png" alt="Create tracking link dialog"><br><sub>2. Destination, alias, options, UTM tags</sub></td>
+</tr>
+<tr>
+<td colspan="2"><img src="docs/screenshots/11-links-list.png" alt="Links list with created links"><br><sub>3. Both links, ready to track — visits, uniques, status, and per-row actions</sub></td>
+</tr>
+</table>
+
+### Analytics
+
+<p align="center"><img src="docs/screenshots/12-analytics.png" alt="Analytics page" width="860"></p>
+
+### URL Solutions toolkit
+
+<p align="center"><img src="docs/screenshots/13-url-tools.png" alt="URL Solutions — encode/decode, UTM builder, analyzer, redirect checker, QR codes" width="860"></p>
+
+### Security Center (recon / OSINT)
+
+<p align="center"><img src="docs/screenshots/14-security.png" alt="Security Center — domain reconnaissance" width="860"></p>
+
+### Platform — API, webhooks, notifications, devices, settings
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/15-api.png" alt="API keys page"><br><sub>Tiered API keys</sub></td>
+<td width="50%"><img src="docs/screenshots/16-webhooks.png" alt="Webhooks page"><br><sub>Webhooks</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/17-notifications.png" alt="Notifications page"><br><sub>Notifications</sub></td>
+<td width="50%"><img src="docs/screenshots/18-devices.png" alt="Devices page"><br><sub>Devices (remote control)</sub></td>
+</tr>
+<tr>
+<td colspan="2"><img src="docs/screenshots/19-settings.png" alt="Settings page"><br><sub>Settings</sub></td>
+</tr>
+</table>
+
+### Empty & error states
+
+Handled deliberately, not left as blank screens:
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/21-404.png" alt="404 page"><br><sub>404 — unknown app route</sub></td>
+<td width="50%"><img src="docs/screenshots/22-link-not-found.png" alt="Tracking link not found page"><br><sub>Unknown/expired tracking link</sub></td>
+</tr>
+</table>
 
 ## Architecture
 
