@@ -9,7 +9,7 @@ import asyncio
 import logging
 from typing import Awaitable, Callable
 
-logger = logging.getLogger("furoftheweak.workers.scheduler")
+logger = logging.getLogger("aventrix.workers.scheduler")
 
 
 async def run_periodic(interval_seconds: int, fn: Callable[[], Awaitable[None]]) -> None:

@@ -56,7 +56,10 @@
     "webhooks": "Webhook",
     "notifications": "通知",
     "settings": "设置",
-    "soon": "即将推出"
+    "soon": "即将推出",
+    "groupWorkspace": "工作区",
+    "groupToolkit": "工具",
+    "groupPlatform": "平台"
   },
   "navbar": {
     "toggleTheme": "切换主题",
@@ -75,7 +78,7 @@
   "auth": {
     "login": {
       "title": "欢迎回来",
-      "subtitle": "登录你的 FurOfTheWeak 工作区",
+      "subtitle": "登录你的 Aventrix 工作区",
       "email": "邮箱",
       "password": "密码",
       "forgotPassword": "忘记密码？",
@@ -612,5 +615,29 @@
     "prefLinkFirstVisit": "链接首次被访问时",
     "prefWebhookFailed": "Webhook 投递永久失败时",
     "prefSecurityWarning": "安全扫描发现低分时"
+  },
+  "devices": {
+    "connectionState": {
+      "idle": "未连接",
+      "starting": "正在启动会话",
+      "waiting_for_device": "等待设备",
+      "negotiating": "协商中",
+      "connected": "直播中",
+      "ended": "会话已结束",
+      "error": "连接失败"
+    },
+    "online": "在线",
+    "offline": "离线",
+    "connect": "连接",
+    "reconnect": "重新连接",
+    "fullscreen": "全屏",
+    "renameTitle": "重命名设备",
+    "nameLabel": "设备名称",
+    "navKeys": "导航",
+    "navBack": "返回",
+    "navHome": "主页",
+    "navRecents": "最近任务",
+    "connectionPanel": "连接",
+    "tryAgain": "重试"
   }
 }

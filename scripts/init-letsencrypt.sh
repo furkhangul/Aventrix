@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-time TLS bootstrap for a fresh FurOfTheWeak production deploy.
+# One-time TLS bootstrap for a fresh Aventrix production deploy.
 #
 # nginx's production config (nginx/nginx.prod.conf) has a TLS server block
 # that points at a Let's Encrypt certificate — but nginx won't even start

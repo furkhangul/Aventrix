@@ -395,10 +395,16 @@ export interface DeviceSessionStart {
 
 // Signaling WS envelope — must stay in sync with backend/app/api/v1/devices.py
 // and docs/DEVICE_CONTROL_PROTOCOL.md.
+export type SignalPeerRole = "controller" | "target";
+
 export type SignalMessage =
   | { type: "offer"; data: RTCSessionDescriptionInit }
   | { type: "answer"; data: RTCSessionDescriptionInit }
   | { type: "ice-candidate"; data: RTCIceCandidateInit }
+  // Raised by the relay itself, not by a peer: the other side opened or
+  // closed its signaling socket.
+  | { type: "peer-joined"; data: { role: SignalPeerRole } }
+  | { type: "peer-left"; data: { role: SignalPeerRole } }
   | { type: "bye"; data: { reason?: string } };
 
 // RTCDataChannel("input") message shape — normalized 0..1 pointer
@@ -406,3 +412,6 @@ export type SignalMessage =
 export type DeviceInputMessage =
   | { type: "pointer"; action: "down" | "move" | "up"; x: number; y: number }
   | { type: "key"; action: "down" | "up"; key: string; code: string };
+
+/** Hardware/navigation keys the control page can send as a "key" message. */
+export type DeviceNavKey = "BACK" | "HOME" | "RECENTS";

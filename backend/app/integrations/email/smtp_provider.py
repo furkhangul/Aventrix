@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from app.core.config import get_settings
 from app.integrations.email.base import EmailProvider
 
-logger = logging.getLogger("furoftheweak.email.smtp")
+logger = logging.getLogger("aventrix.email.smtp")
 settings = get_settings()
 
 

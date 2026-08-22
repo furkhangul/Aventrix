@@ -56,7 +56,10 @@
     "webhooks": "Webhooks",
     "notifications": "Notificaciones",
     "settings": "Configuración",
-    "soon": "Pronto"
+    "soon": "Pronto",
+    "groupWorkspace": "Espacio de trabajo",
+    "groupToolkit": "Herramientas",
+    "groupPlatform": "Plataforma"
   },
   "navbar": {
     "toggleTheme": "Cambiar tema",
@@ -75,7 +78,7 @@
   "auth": {
     "login": {
       "title": "Bienvenido de nuevo",
-      "subtitle": "Inicia sesión en tu espacio de trabajo de FurOfTheWeak",
+      "subtitle": "Inicia sesión en tu espacio de trabajo de Aventrix",
       "email": "Correo electrónico",
       "password": "Contraseña",
       "forgotPassword": "¿Olvidaste tu contraseña?",
@@ -612,5 +615,29 @@
     "prefLinkFirstVisit": "Un enlace reciba su primera visita",
     "prefWebhookFailed": "Una entrega de webhook falle definitivamente",
     "prefSecurityWarning": "Un análisis de seguridad encuentre una puntuación baja"
+  },
+  "devices": {
+    "connectionState": {
+      "idle": "Sin conexión",
+      "starting": "Iniciando sesión",
+      "waiting_for_device": "Esperando al dispositivo",
+      "negotiating": "Negociando",
+      "connected": "En vivo",
+      "ended": "Sesión finalizada",
+      "error": "Error de conexión"
+    },
+    "online": "En línea",
+    "offline": "Sin conexión",
+    "connect": "Conectar",
+    "reconnect": "Reconectar",
+    "fullscreen": "Pantalla completa",
+    "renameTitle": "Renombrar dispositivo",
+    "nameLabel": "Nombre del dispositivo",
+    "navKeys": "Navegación",
+    "navBack": "Atrás",
+    "navHome": "Inicio",
+    "navRecents": "Recientes",
+    "connectionPanel": "Conexión",
+    "tryAgain": "Reintentar"
   }
 }

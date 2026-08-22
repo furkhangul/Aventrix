@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    One-time local dev bootstrap for FurOfTheWeak (Windows/PowerShell).
+    One-time local dev bootstrap for Aventrix (Windows/PowerShell).
 
 .DESCRIPTION
     Creates .env from .env.example if it doesn't exist yet, checks for

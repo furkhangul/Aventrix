@@ -44,13 +44,24 @@ async def get_pairing_code_by_hash(db: AsyncSession, code_hash: str) -> DevicePa
     return result.scalar_one_or_none()
 
 
-async def get_latest_pending_session_for_device(db: AsyncSession, *, device_id: uuid.UUID) -> DeviceSession | None:
-    """Newest PENDING session for this device, if any — lets the device discover a
-    session the controller started without already knowing its session_id."""
+async def get_latest_pending_session_for_device(
+    db: AsyncSession, *, device_id: uuid.UUID, not_before: datetime | None = None
+) -> DeviceSession | None:
+    """
+    Newest PENDING session for this device, if any — lets the device discover
+    a session the controller started without already knowing its session_id.
+
+    [not_before] bounds how old that session may be: a session the controller
+    walked away from (backend restarted, tab killed before its socket closed)
+    stays PENDING until the sweeper runs, and handing that dead id to a phone
+    that is polling means it burns its consent dialog on a session nobody is
+    listening to.
+    """
+    conditions = [DeviceSession.device_id == device_id, DeviceSession.status == DeviceSessionStatus.PENDING]
+    if not_before is not None:
+        conditions.append(DeviceSession.created_at >= not_before)
     result = await db.execute(
-        select(DeviceSession)
-        .where(DeviceSession.device_id == device_id, DeviceSession.status == DeviceSessionStatus.PENDING)
-        .order_by(DeviceSession.created_at.desc())
+        select(DeviceSession).where(*conditions).order_by(DeviceSession.created_at.desc())
     )
     return result.scalars().first()
 

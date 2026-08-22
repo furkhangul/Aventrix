@@ -57,7 +57,10 @@
     "notifications": "Notifications",
     "devices": "Devices",
     "settings": "Settings",
-    "soon": "Soon"
+    "soon": "Soon",
+    "groupWorkspace": "Workspace",
+    "groupToolkit": "Toolkit",
+    "groupPlatform": "Platform"
   },
   "navbar": {
     "toggleTheme": "Toggle theme",
@@ -76,7 +79,7 @@
   "auth": {
     "login": {
       "title": "Welcome back",
-      "subtitle": "Sign in to your FurOfTheWeak workspace",
+      "subtitle": "Sign in to your Aventrix workspace",
       "email": "Email",
       "password": "Password",
       "forgotPassword": "Forgot password?",
@@ -699,9 +702,15 @@
   "devices": {
     "title": "Devices",
     "subtitle": "View and control your own Android phone's screen from the browser. Pairing requires confirming a code on the physical device — no device is ever added silently.",
+    "summary": "{{total}} paired · {{online}} online",
     "pairNewDevice": "Pair new device",
     "pairDialogTitle": "Pair a device",
-    "pairInstructions": "Scan this QR code or enter the code in the FurOfTheWeak companion app on your phone.",
+    "pairInstructions": "Scan this QR code or enter the code in the Aventrix companion app on your phone.",
+    "pairStepInstall": "Open the Aventrix Device app on your phone.",
+    "pairStepServer": "Point it at this server's address, if you haven't already.",
+    "pairStepCode": "Enter the code above and tap Pair.",
+    "pairedTitle": "Device paired",
+    "pairedBody": "It's in your list now. Turn on screen sharing in the app, then press Connect.",
     "codeExpiresIn": "Expires in {{seconds}}s",
     "codeExpired": "This code has expired.",
     "generateNewCode": "Generate new code",
@@ -717,20 +726,103 @@
     "statusActive": "Active",
     "statusRevoked": "Revoked",
     "neverSeen": "Never",
+    "online": "Online",
+    "offline": "Offline",
+    "offlineHint": "The phone isn't checking in. Open the Aventrix Device app and turn on screen sharing.",
     "connect": "Connect",
+    "reconnect": "Reconnect",
+    "tryAgain": "Try again",
     "revoke": "Revoke",
     "revokeConfirmTitle": "Revoke this device?",
     "revokeConfirmBody": "This immediately ends any active session and the device will need to be paired again to reconnect.",
+    "renameTitle": "Rename device",
+    "nameLabel": "Device name",
     "controlTitle": "Remote control",
     "waitingForDevice": "Waiting for the device to connect…",
     "disconnect": "Disconnect",
+    "fullscreen": "Fullscreen",
     "controlHint": "Click and drag on the screen to send touch input. This is a live, unrecorded peer-to-peer connection.",
+    "inputUnavailable": "Touch input isn't available yet — it needs the accessibility service enabled on the phone.",
+    "connectionPanel": "Connection",
+    "navKeys": "Navigation",
+    "navBack": "Back",
+    "navHome": "Home",
+    "navRecents": "Recents",
+    "statDevice": "Device",
+    "statResolution": "Resolution",
+    "statFps": "Frames/s",
+    "statBitrate": "Bitrate",
+    "statLatency": "Latency",
+    "onThePhone": "On the phone",
+    "phoneStepOpen": "Open the Aventrix Device app.",
+    "phoneStepToggle": "Turn on screen sharing.",
+    "phoneStepAccept": "Accept the screen-capture prompt.",
+    "sessionEndedTitle": "Session ended",
+    "sessionEndedBody": "The connection was closed. You can start a new session whenever the phone is ready.",
     "connectionState": {
+      "idle": "Not connected",
       "starting": "Starting session",
-      "waiting_for_peer": "Waiting for device",
-      "connected": "Connected",
+      "waiting_for_device": "Waiting for device",
+      "negotiating": "Negotiating",
+      "connected": "Live",
       "ended": "Session ended",
       "error": "Connection failed"
+    },
+    "step": {
+      "starting": {
+        "title": "Session created",
+        "hint": "Reserving a slot on the server…"
+      },
+      "waiting_for_device": {
+        "title": "Phone joins",
+        "hint": "The app checks in every few seconds — make sure screen sharing is on."
+      },
+      "negotiating": {
+        "title": "Screen streaming",
+        "hint": "The phone joined; opening the video channel…"
+      }
+    },
+    "error": {
+      "start_failed": {
+        "title": "Couldn't start the session",
+        "body": "The server rejected the request. Try again in a moment."
+      },
+      "not_enabled": {
+        "title": "Device control isn't enabled",
+        "body": "The server has ENABLE_DEVICE_CONTROL turned off."
+      },
+      "device_offline": {
+        "title": "Device unavailable",
+        "body": "This device has been revoked or is no longer paired."
+      },
+      "signaling_failed": {
+        "title": "Couldn't reach the server",
+        "body": "The signaling connection failed. Check your network and try again."
+      },
+      "ticket_rejected": {
+        "title": "Session ticket rejected",
+        "body": "The ticket expired before it was used. Starting a fresh session usually fixes it."
+      },
+      "session_gone": {
+        "title": "Session no longer exists",
+        "body": "It expired or was ended elsewhere. Start a new one."
+      },
+      "device_timeout": {
+        "title": "The phone never joined",
+        "body": "Open the Aventrix Device app, turn on screen sharing, and accept the screen-capture prompt."
+      },
+      "negotiation_timeout": {
+        "title": "No video arrived",
+        "body": "The phone joined but never sent its screen. Check that the screen-capture prompt was accepted."
+      },
+      "peer_failed": {
+        "title": "Couldn't establish a direct connection",
+        "body": "The two devices could not find a network path. On different networks this needs a working TURN server."
+      },
+      "connection_lost": {
+        "title": "Connection lost",
+        "body": "The link to the phone dropped. Reconnect to try again."
+      }
     }
   },
   "notifications": {

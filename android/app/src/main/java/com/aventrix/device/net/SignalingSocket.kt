@@ -1,4 +1,4 @@
-package com.furoftheweak.device.net
+package com.aventrix.device.net
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json

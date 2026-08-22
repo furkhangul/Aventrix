@@ -1,4 +1,4 @@
-package com.furoftheweak.device.control
+package com.aventrix.device.control
 
 import kotlinx.serialization.Serializable
 

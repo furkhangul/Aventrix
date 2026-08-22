@@ -22,11 +22,11 @@ export const ToastViewport = forwardRef<
 ToastViewport.displayName = ToastPrimitive.Viewport.displayName;
 
 const toastVariants = cva(
-  "group relative flex w-full items-start gap-3 overflow-hidden rounded-lg border p-4 shadow-lg animate-fade-in",
+  "group relative flex w-full items-start gap-3 overflow-hidden rounded-xl border p-4 shadow-lg backdrop-blur-sm animate-fade-up",
   {
     variants: {
       variant: {
-        default: "border-border bg-card text-card-foreground",
+        default: "border-border/70 bg-card/95 text-card-foreground",
         success: "border-success/30 bg-success/10 text-foreground",
         destructive: "border-destructive/30 bg-destructive/10 text-foreground",
       },

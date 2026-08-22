@@ -46,8 +46,8 @@ sudo usermod -aG docker $USER
 ## 5. Clone the repo and configure
 
 ```bash
-git clone <your-repo-url> furoftheweak
-cd furoftheweak
+git clone <your-repo-url> aventrix
+cd aventrix
 cp .env.production.example .env.production
 nano .env.production   # fill in APP_SECRET_KEY, JWT_SECRET_KEY, POSTGRES_PASSWORD,
                         # APP_BASE_URL/FRONTEND_BASE_URL/TRACKING_BASE_URL/CORS_ORIGINS
@@ -89,7 +89,7 @@ Create your first account by registering normally in the browser, then promote i
 
 ```bash
 docker compose --env-file .env.production -f docker-compose.prod.yml exec postgres \
-  psql -U furoftheweak -d furoftheweak \
+  psql -U aventrix -d aventrix \
   -c "UPDATE users SET role='SUPER_ADMIN' WHERE email='you@example.com';"
 ```
 
@@ -100,7 +100,7 @@ If you enabled `ENABLE_DEVICE_CONTROL`, confirm pairing works end-to-end (`/devi
 ```bash
 crontab -e
 # add:
-0 3 * * * cd /home/ubuntu/furoftheweak && bash scripts/backup-db.sh >> /var/log/furoftheweak-backup.log 2>&1
+0 3 * * * cd /home/ubuntu/aventrix && bash scripts/backup-db.sh >> /var/log/aventrix-backup.log 2>&1
 ```
 
 Dumps land in `backups/` (gitignored), 14 days retained automatically by the script. Test a restore at least once — an untested backup isn't a backup (see `docs/DEPLOYMENT.md`).

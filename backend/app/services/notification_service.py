@@ -37,7 +37,7 @@ async def _maybe_send_email(db: AsyncSession, *, user_id: uuid.UUID, type_key: s
         return
     await get_email_provider().send(
         to=user.email,
-        subject=f"[FurOfTheWeak] {title}",
+        subject=f"[Aventrix] {title}",
         body_text=message,
     )
 

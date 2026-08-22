@@ -45,7 +45,7 @@ pip install -r requirements-dev.txt   # includes requirements.txt + test tooling
 # .env at the repo root is read via `../.env` when running from backend/
 cp ../.env.example ../.env
 # edit DATABASE_URL / REDIS_URL to point at your local instances, e.g.:
-#   DATABASE_URL=postgresql+asyncpg://furoftheweak:change-me@localhost:5432/furoftheweak
+#   DATABASE_URL=postgresql+asyncpg://aventrix:change-me@localhost:5432/aventrix
 #   REDIS_URL=redis://localhost:6379/0
 
 alembic upgrade head

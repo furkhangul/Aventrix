@@ -297,7 +297,7 @@ export function generateSecurityReportPdf(scan: SecurityScan, t: TFunction) {
     doc.setFont("helvetica", "normal");
     doc.setFontSize(7.5);
     doc.setTextColor(...COLORS.muted);
-    doc.text("FurOfTheWeak Security Center", MARGIN, PAGE_HEIGHT - 8);
+    doc.text("Aventrix Security Center", MARGIN, PAGE_HEIGHT - 8);
     doc.text(`${i} / ${pageCount}`, PAGE_WIDTH - MARGIN, PAGE_HEIGHT - 8, { align: "right" });
   }
 

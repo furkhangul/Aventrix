@@ -18,7 +18,7 @@ from app.models.enums import UserRole
 from app.models.user import User
 from app.repositories.user_repository import get_user_by_email
 
-logger = logging.getLogger("furoftheweak.seed")
+logger = logging.getLogger("aventrix.seed")
 settings = get_settings()
 
 

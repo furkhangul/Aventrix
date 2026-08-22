@@ -18,7 +18,7 @@ from fastapi import HTTPException, Request, status
 from app.core.config import get_settings
 from app.utils.network import get_client_ip
 
-logger = logging.getLogger("furoftheweak.rate_limit")
+logger = logging.getLogger("aventrix.rate_limit")
 settings = get_settings()
 
 # A slow/unreachable Redis must degrade to the in-memory fallback in well

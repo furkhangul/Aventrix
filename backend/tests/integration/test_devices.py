@@ -25,6 +25,13 @@ def _enable_device_control():
 
 
 async def _redis_reachable() -> bool:
+    """
+    Also drops the module's cached client first: it is created lazily and
+    bound to whatever event loop was running at the time, and pytest-asyncio
+    gives each test a fresh loop — so a client left over from an earlier test
+    fails on its next call and the test silently skips.
+    """
+    device_signaling_service._redis_client = None
     try:
         client = device_signaling_service._get_redis()
         await asyncio.wait_for(client.ping(), timeout=1.0)
@@ -347,3 +354,117 @@ async def test_signal_relay_round_trip_without_self_echo():
             controller_iter = controller_relay.listen()
             received_answer = await asyncio.wait_for(controller_iter.__anext__(), timeout=5.0)
             assert received_answer == {"type": "answer", "data": {"sdp": "y"}}
+
+
+# --- Session/device discovery contract -------------------------------------------
+
+
+async def test_pending_session_survives_the_controller_connecting(client, db_session):
+    """
+    Regression: the controller opens its signaling socket milliseconds after
+    creating the session, long before the phone's next poll. Marking the
+    session ACTIVE on that connect took it out of the PENDING set the phone
+    looks in, so the device could never discover the session it was for —
+    the browser waited for a peer that was never told to come.
+    """
+    await _register(client)
+    paired = await _pair_device(client)
+    device_id = paired["device"]["id"]
+    auth = {"Authorization": f"Bearer {paired['device_secret']}"}
+
+    session = (await client.post(f"/api/v1/devices/{device_id}/sessions")).json()
+
+    await device_service.mark_session_active_on_connect(
+        db_session, session_id=uuid.UUID(session["session_id"]), role="controller"
+    )
+
+    pending = await client.get(f"/api/v1/devices/{device_id}/sessions/pending", headers=auth)
+    assert pending.json()["session_id"] == session["session_id"]
+
+    # The device joining is what actually makes it active.
+    await device_service.mark_session_active_on_connect(
+        db_session, session_id=uuid.UUID(session["session_id"]), role="target"
+    )
+    sessions = (await client.get(f"/api/v1/devices/{device_id}/sessions")).json()
+    assert sessions["items"][0]["status"] == "ACTIVE"
+
+
+async def test_starting_a_session_supersedes_the_previous_one(client):
+    """A reloaded browser tab must not leave a dead session for the phone to pick up."""
+    await _register(client)
+    paired = await _pair_device(client)
+    device_id = paired["device"]["id"]
+    auth = {"Authorization": f"Bearer {paired['device_secret']}"}
+
+    first = (await client.post(f"/api/v1/devices/{device_id}/sessions")).json()
+    second = (await client.post(f"/api/v1/devices/{device_id}/sessions")).json()
+
+    pending = await client.get(f"/api/v1/devices/{device_id}/sessions/pending", headers=auth)
+    assert pending.json()["session_id"] == second["session_id"]
+
+    sessions = {s["id"]: s for s in (await client.get(f"/api/v1/devices/{device_id}/sessions")).json()["items"]}
+    assert sessions[first["session_id"]]["status"] == "ENDED"
+    assert sessions[first["session_id"]]["ended_reason"] == "superseded"
+
+
+async def test_polling_for_a_session_refreshes_last_seen(client):
+    """The device list's online dot is driven by last_seen_at, which only the poll updates."""
+    await _register(client)
+    paired = await _pair_device(client)
+    device_id = paired["device"]["id"]
+    auth = {"Authorization": f"Bearer {paired['device_secret']}"}
+
+    assert paired["device"]["last_seen_at"] is None
+
+    await client.get(f"/api/v1/devices/{device_id}/sessions/pending", headers=auth)
+
+    listed = (await client.get("/api/v1/devices")).json()["items"][0]
+    assert listed["last_seen_at"] is not None
+
+
+# --- Signaling delivery ------------------------------------------------------------
+
+
+async def test_signal_reaches_a_peer_that_subscribes_afterwards():
+    """
+    Regression: plain pub/sub dropped anything sent before the recipient
+    subscribed, and the two peers join seconds apart by design — so the
+    target's SDP offer and its first ICE candidates were routinely lost and
+    the controller hung on "waiting for device" forever.
+    """
+    if not await _redis_reachable():
+        pytest.skip("Redis not reachable from this test environment")
+
+    session_id = uuid.uuid4()
+    try:
+        # Nobody is listening yet — this has to be held, not dropped.
+        await device_signaling_service.publish_signal(session_id, "target", {"type": "offer", "data": {"sdp": "x"}})
+        await device_signaling_service.publish_signal(
+            session_id, "target", {"type": "ice-candidate", "data": {"candidate": "c1"}}
+        )
+
+        async with device_signaling_service.SignalRelay(session_id, "controller") as relay:
+            stream = relay.listen()
+            first = await asyncio.wait_for(stream.__anext__(), timeout=5.0)
+            second = await asyncio.wait_for(stream.__anext__(), timeout=5.0)
+
+        # Replayed in the order they were sent — an answer built from a later
+        # offer, or candidates applied before their offer, would fail.
+        assert first == {"type": "offer", "data": {"sdp": "x"}}
+        assert second == {"type": "ice-candidate", "data": {"candidate": "c1"}}
+    finally:
+        await device_signaling_service.clear_session(session_id)
+
+
+async def test_clear_session_drops_undelivered_signals():
+    """A finished session must not replay its leftovers into a later one."""
+    if not await _redis_reachable():
+        pytest.skip("Redis not reachable from this test environment")
+
+    session_id = uuid.uuid4()
+    await device_signaling_service.publish_signal(session_id, "target", {"type": "offer", "data": {"sdp": "x"}})
+    await device_signaling_service.clear_session(session_id)
+
+    async with device_signaling_service.SignalRelay(session_id, "controller") as relay:
+        with pytest.raises(asyncio.TimeoutError):
+            await asyncio.wait_for(relay.listen().__anext__(), timeout=1.0)

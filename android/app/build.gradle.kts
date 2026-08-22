@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.furoftheweak.device"
+    namespace = "com.aventrix.device"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.furoftheweak.device"
+        applicationId = "com.aventrix.device"
         // AccessibilityService.dispatchGesture needs API 24+; the
         // mediaProjection foreground-service type needs API 29+. 26 keeps
         // the manifest/permission model simple without excluding much.

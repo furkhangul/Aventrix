@@ -14,15 +14,15 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-furoftheweak}
+      POSTGRES_USER: ${POSTGRES_USER:-aventrix}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
-      POSTGRES_DB: ${POSTGRES_DB:-furoftheweak}
+      POSTGRES_DB: ${POSTGRES_DB:-aventrix}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     # No published port — only reachable from other containers on this
     # compose network, unlike the dev file which exposes 5432 to the host.
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-furoftheweak}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-aventrix}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -47,7 +47,7 @@ services:
     env_file:
       - .env.production
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://furoftheweak:change-me@postgres:5432/furoftheweak}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://aventrix:change-me@postgres:5432/aventrix}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
     volumes:
       - backend_uploads:/app/uploads
@@ -75,7 +75,7 @@ services:
     env_file:
       - .env.production
     environment:
-      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://furoftheweak:change-me@postgres:5432/furoftheweak}
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://aventrix:change-me@postgres:5432/aventrix}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
     volumes:
       - backend_uploads:/app/uploads
@@ -120,7 +120,7 @@ services:
         --min-port=49152 --max-port=49252
         --use-auth-secret
         --static-auth-secret=${TURN_SHARED_SECRET:-change-me}
-        --realm=${TURN_REALM:-furoftheweak.local}
+        --realm=${TURN_REALM:-aventrix.local}
         --no-cli
 
   # Requests/renews the Let's Encrypt certificate nginx serves. The initial

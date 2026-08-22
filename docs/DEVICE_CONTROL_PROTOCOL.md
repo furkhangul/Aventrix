@@ -67,12 +67,23 @@ type SignalMessage =
   | { type: "offer";  data: RTCSessionDescriptionInit }
   | { type: "answer"; data: RTCSessionDescriptionInit }
   | { type: "ice-candidate"; data: RTCIceCandidateInit }
+  | { type: "peer-joined"; data: { role: "controller" | "target" } }  // relay-generated
+  | { type: "peer-left";   data: { role: "controller" | "target" } }  // relay-generated
   | { type: "bye"; data: { reason?: string } }
 ```
 
 Convention: the **target (Android device)** is the offering side, since it owns the media (screen capture) and creates the `input` data channel. The **controller (web)** answers and receives the data channel via `ondatachannel`.
 
-- Session status flips `PENDING` → `ACTIVE` on the first peer WS connect.
+`peer-joined` / `peer-left` are raised by the relay itself, not by a peer: they fire when the other side opens or closes its signaling socket. The controller needs them to tell "the phone has not joined yet" apart from "the phone joined and negotiation is under way" — without that distinction the browser can only show an indefinite spinner, with no idea whether anything is wrong. A client must ignore message types it does not recognise.
+
+**Delivery is buffered, not fire-and-forget.** The two peers join seconds apart by design — the phone only discovers the session on its next poll, and its owner then has to accept the `MediaProjection` consent dialog. Anything published while the recipient is not yet subscribed is queued in a short-lived per-recipient Redis list (`MAILBOX_TTL_SECONDS`, 5 min) and replayed, in order, the moment that peer subscribes. Plain pub/sub dropped it, which reliably lost the target's SDP offer and its first ICE candidates. Both consequences follow from this and matter to a client implementation:
+
+- A peer can receive an offer and its ICE candidates in one burst on connect, so candidates may arrive **before** the remote description is set. Queue them until it is (the web client does this in `IceCandidateQueue`); `addIceCandidate` throws otherwise.
+- The mailbox is dropped when the session ends, so nothing from a finished session can leak into a later one.
+
+- Session status flips `PENDING` → `ACTIVE` when the **target** connects — not on the first peer of either kind. `PENDING` is exactly the set `/sessions/pending` searches, and the controller opens its socket milliseconds after creating the session, well before the phone's next poll; flipping on the controller's connect made every session invisible to the device it was for.
+- Starting a session supersedes any `PENDING`/`ACTIVE` session already open for that device (`ended_reason: "superseded"`), so a reloaded browser tab cannot leave an orphan for the phone to pick up.
+- `/sessions/pending` only returns a session created within `DEVICE_SESSION_PENDING_TTL_SECONDS` (default 180s), so a phone never burns its consent dialog on a session nobody is listening to. Every poll also refreshes the device's `last_seen_at`, which is what drives the web UI's online indicator.
 - A `bye` (sent explicitly, or implied by either side disconnecting, or by revoking the device from the web UI) ends the session and closes both sockets.
 - Sessions hard-expire after `DEVICE_SESSION_MAX_DURATION_SECONDS` (default 3600s) regardless of activity; a periodic worker sweep (`app/services/device_service.py::sweep_stale_devices`) cleans up anything left `PENDING`/`ACTIVE` past its `expires_at`.
 - The backend never inspects or stores message contents beyond relaying them — no recording, by construction (media itself never transits this process at all).
@@ -87,6 +98,8 @@ type DeviceInputMessage =
   | { type: "key"; action: "down" | "up"; key: string; code: string }         // KeyboardEvent.key / .code
 ```
 
+The three navigation keys are sent as `key` messages with `key` set to `"BACK"`, `"HOME"`, or `"RECENTS"`; the device maps those onto `AccessibilityService.performGlobalAction`, which is the supported way to press them. Any other `key` value falls under the partial text-insertion support described below.
+
 Normalized `x`/`y` keep the message independent of either peer's actual resolution — the device maps them back to real screen pixels.
 
 ## Android client
@@ -94,7 +107,7 @@ Normalized `x`/`y` keep the message independent of either peer's actual resoluti
 Lives in `android/` (Kotlin/Gradle, not buildable/testable from the environment that wrote it — see its own notes). Implements this contract in full:
 
 - **`MediaProjection`** for screen capture. This forces Android's own "this app is capturing your screen" system dialog — non-bypassable, and exactly the explicit-consent flow this project already requires for any sensitive capability (see `Proje.md`'s camera/mic/screen rules). `HomeActivity` requests consent and hands the raw result `Intent` to `ControlForegroundService`, which builds a `ScreenCapturerAndroid` from it directly rather than resolving a `MediaProjection` object itself.
-- **`AccessibilityService`** (`DeviceControlAccessibilityService`) for input injection, requiring a separate, explicit grant in Android Settings (not requestable via a normal runtime permission dialog) — `HomeActivity` detects this and prompts before allowing sharing to start. Pointer events dispatch via `GestureDescription`; keyboard events are honest best-effort only — no general raw-keycode injection API exists on `AccessibilityService`, so only single-character insertion into the currently-focused editable field is supported, not arbitrary `KeyboardEvent` passthrough (see `InputInjector.kt`).
+- **`AccessibilityService`** (`DeviceControlAccessibilityService`) for input injection, requiring a separate, explicit grant in Android Settings (not requestable via a normal runtime permission dialog) — `HomeActivity` detects this and prompts before allowing sharing to start. Pointer events dispatch via `GestureDescription`, and the Back/Home/Recents keys via `performGlobalAction`. Everything else on the keyboard is honest best-effort only — no general raw-keycode injection API exists on `AccessibilityService`, so only single-character insertion into the currently-focused editable field is supported, not arbitrary `KeyboardEvent` passthrough (see `InputInjector.kt`).
 - **A persistent foreground-service notification** (`ControlForegroundService`, `foregroundServiceType="mediaProjection"`) for the entire duration of an active control session. Android 14+ enforces this regardless; treated as a hard requirement here too.
 - **Session discovery**: the device has no push channel, so `HomeActivity` polls `GET /{device_id}/sessions/pending` every ~3s while the user has sharing toggled on **and the app is in the foreground** — deliberately not an always-on background service, matching this project's explicit-consent posture (the owner opens the app to actively allow a session, rather than the phone silently listening at all times). An always-listening mode (push notification, persistent background service) is a natural v2, not implemented here.
 - The pairing REST contract and signaling/data-channel wire format above, unchanged. Pairing uses manual 8-character code entry (`PairingActivity`), not camera/QR scanning, for v1.

@@ -56,7 +56,10 @@
     "webhooks": "Webhooks",
     "notifications": "الإشعارات",
     "settings": "الإعدادات",
-    "soon": "قريبًا"
+    "soon": "قريبًا",
+    "groupWorkspace": "مساحة العمل",
+    "groupToolkit": "الأدوات",
+    "groupPlatform": "المنصة"
   },
   "navbar": {
     "toggleTheme": "تبديل المظهر",
@@ -75,7 +78,7 @@
   "auth": {
     "login": {
       "title": "مرحبًا بعودتك",
-      "subtitle": "سجّل الدخول إلى مساحة عمل FurOfTheWeak الخاصة بك",
+      "subtitle": "سجّل الدخول إلى مساحة عمل Aventrix الخاصة بك",
       "email": "البريد الإلكتروني",
       "password": "كلمة المرور",
       "forgotPassword": "هل نسيت كلمة المرور؟",
@@ -612,5 +615,29 @@
     "prefLinkFirstVisit": "يحصل رابط على أول زيارة له",
     "prefWebhookFailed": "يفشل تسليم Webhook بشكل نهائي",
     "prefSecurityWarning": "يعثر فحص أمني على درجة منخفضة"
+  },
+  "devices": {
+    "connectionState": {
+      "idle": "غير متصل",
+      "starting": "جارٍ بدء الجلسة",
+      "waiting_for_device": "في انتظار الجهاز",
+      "negotiating": "جارٍ التفاوض",
+      "connected": "مباشر",
+      "ended": "انتهت الجلسة",
+      "error": "فشل الاتصال"
+    },
+    "online": "متصل",
+    "offline": "غير متصل",
+    "connect": "اتصال",
+    "reconnect": "إعادة الاتصال",
+    "fullscreen": "ملء الشاشة",
+    "renameTitle": "إعادة تسمية الجهاز",
+    "nameLabel": "اسم الجهاز",
+    "navKeys": "التنقل",
+    "navBack": "رجوع",
+    "navHome": "الرئيسية",
+    "navRecents": "الأخيرة",
+    "connectionPanel": "الاتصال",
+    "tryAgain": "أعد المحاولة"
   }
 }

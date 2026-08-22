@@ -54,7 +54,7 @@ def _to_public(device) -> DevicePublic:
 def _pairing_qr_data_url(code: str) -> str:
     # Same PNG generator the QR Codes module already uses (app/services/qr_service.py)
     # — pairing codes just happen to also want a scannable form.
-    png_bytes = qr_service.generate_qr_png(f"furoftheweak-device-pair:{code}", size=320)
+    png_bytes = qr_service.generate_qr_png(f"aventrix-device-pair:{code}", size=320)
     return f"data:image/png;base64,{base64.b64encode(png_bytes).decode()}"
 
 
@@ -364,8 +364,18 @@ async def device_signal(
         return
 
     role = claims["role"]
+    peer_role = device_signaling_service.other_role(role)
     await websocket.accept()
-    await device_service.mark_session_active_on_connect(db, session_id=session_id)
+    await device_service.mark_session_active_on_connect(db, session_id=session_id, role=role)
+
+    # Tell whoever is (or later shows up) on the other side that this peer is
+    # here. The controller needs it to distinguish "the phone has not joined
+    # yet" from "the phone joined and negotiation is under way" — without it
+    # the browser can only show an indefinite spinner and has no idea whether
+    # anything is wrong.
+    await device_signaling_service.publish_to_role(
+        session_id, peer_role, {"type": "peer-joined", "data": {"role": role}}
+    )
 
     async def forward_from_peer():
         async with device_signaling_service.SignalRelay(session_id, role) as relay:
@@ -375,6 +385,8 @@ async def device_signal(
     async def forward_to_peer():
         while True:
             message = await websocket.receive_json()
+            if not isinstance(message, dict) or "type" not in message:
+                continue
             await device_signaling_service.publish_signal(session_id, role, message)
             if message.get("type") == "bye":
                 break
@@ -389,4 +401,14 @@ async def device_signal(
             if exc and not isinstance(exc, WebSocketDisconnect):
                 raise exc
     finally:
+        # Either peer leaving ends the session: the controller is the only
+        # thing driving it, and the target is the only thing producing media,
+        # so neither can usefully carry on alone. Say so on the way out
+        # instead of letting the survivor hang on a dead connection.
+        try:
+            await device_signaling_service.publish_to_role(
+                session_id, peer_role, {"type": "peer-left", "data": {"role": role}}
+            )
+        except Exception:
+            pass
         await device_service.mark_session_ended(db, session_id=session_id, reason="disconnected")

@@ -23,7 +23,7 @@ from app.workers.queue import ENRICH_VISIT_QUEUE, WEBHOOK_DELIVERY_QUEUE
 from app.workers.scheduler import run_periodic
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("furoftheweak.workers.runner")
+logger = logging.getLogger("aventrix.workers.runner")
 settings = get_settings()
 
 POLL_TIMEOUT_SECONDS = 5

@@ -1,8 +1,8 @@
-package com.furoftheweak.device.accessibility
+package com.aventrix.device.accessibility
 
 import android.accessibilityservice.AccessibilityService
 import android.view.accessibility.AccessibilityEvent
-import com.furoftheweak.device.control.InputInjector
+import com.aventrix.device.control.InputInjector
 
 /**
  * Exists purely to obtain gesture-dispatch / text-injection capability for

@@ -1,4 +1,4 @@
-package com.furoftheweak.device.ui
+package com.aventrix.device.ui
 
 import android.content.Intent
 import android.os.Build
@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.furoftheweak.device.R
-import com.furoftheweak.device.databinding.ActivityPairingBinding
-import com.furoftheweak.device.net.ApiClientFactory
-import com.furoftheweak.device.net.PairingExchangeRequest
-import com.furoftheweak.device.storage.SecureStore
+import com.aventrix.device.R
+import com.aventrix.device.databinding.ActivityPairingBinding
+import com.aventrix.device.net.ApiClientFactory
+import com.aventrix.device.net.PairingExchangeRequest
+import com.aventrix.device.storage.SecureStore
 import kotlinx.coroutines.launch
 
 /**

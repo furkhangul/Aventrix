@@ -10,7 +10,7 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.FurOfTheWeakDevice"
+        android:theme="@style/Theme.AventrixDevice"
         android:usesCleartextTraffic="true">
         <!--
           Cleartext allowed: this is a personal/self-hosted control-plane app

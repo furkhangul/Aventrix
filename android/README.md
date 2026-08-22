@@ -1,4 +1,4 @@
-# FurOfTheWeak Device (Android client)
+# Aventrix Device (Android client)
 
 Implements the Android side of the Devices module's pairing/control protocol
 (`docs/DEVICE_CONTROL_PROTOCOL.md`) — screen viewing + remote input control

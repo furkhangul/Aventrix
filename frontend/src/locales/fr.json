@@ -56,7 +56,10 @@
     "webhooks": "Webhooks",
     "notifications": "Notifications",
     "settings": "Paramètres",
-    "soon": "Bientôt"
+    "soon": "Bientôt",
+    "groupWorkspace": "Espace de travail",
+    "groupToolkit": "Outils",
+    "groupPlatform": "Plateforme"
   },
   "navbar": {
     "toggleTheme": "Changer de thème",
@@ -75,7 +78,7 @@
   "auth": {
     "login": {
       "title": "Content de vous revoir",
-      "subtitle": "Connectez-vous à votre espace de travail FurOfTheWeak",
+      "subtitle": "Connectez-vous à votre espace de travail Aventrix",
       "email": "E-mail",
       "password": "Mot de passe",
       "forgotPassword": "Mot de passe oublié ?",
@@ -612,5 +615,29 @@
     "prefLinkFirstVisit": "Un lien reçoit sa première visite",
     "prefWebhookFailed": "Une livraison de webhook échoue définitivement",
     "prefSecurityWarning": "Une analyse de sécurité détecte un score faible"
+  },
+  "devices": {
+    "connectionState": {
+      "idle": "Non connecté",
+      "starting": "Démarrage de la session",
+      "waiting_for_device": "En attente de l'appareil",
+      "negotiating": "Négociation",
+      "connected": "En direct",
+      "ended": "Session terminée",
+      "error": "Échec de la connexion"
+    },
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "connect": "Se connecter",
+    "reconnect": "Reconnecter",
+    "fullscreen": "Plein écran",
+    "renameTitle": "Renommer l'appareil",
+    "nameLabel": "Nom de l'appareil",
+    "navKeys": "Navigation",
+    "navBack": "Retour",
+    "navHome": "Accueil",
+    "navRecents": "Récents",
+    "connectionPanel": "Connexion",
+    "tryAgain": "Réessayer"
   }
 }

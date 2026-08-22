@@ -1,4 +1,4 @@
-package com.furoftheweak.device.control
+package com.aventrix.device.control
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
@@ -79,17 +79,35 @@ object InputInjector {
     }
 
     /**
-     * Best-effort only, by platform limitation: AccessibilityService has no
-     * general raw-keycode injection API, so full KeyboardEvent passthrough
-     * isn't achievable this way. This covers the one thing that actually
-     * works — appending a single printable character to whichever field
-     * currently has accessibility focus — not arbitrary key events. Stated
-     * explicitly here and in docs/DEVICE_CONTROL_PROTOCOL.md rather than
-     * pretending full keyboard support exists.
+     * Two different things share the "key" message, because Android exposes
+     * them through two different APIs:
+     *
+     *  - The three navigation keys (BACK/HOME/RECENTS) map onto
+     *    performGlobalAction, which is the supported way to press them and
+     *    works regardless of what is on screen.
+     *  - Everything else is best-effort only, by platform limitation:
+     *    AccessibilityService has no general raw-keycode injection API, so
+     *    full KeyboardEvent passthrough isn't achievable this way. What
+     *    works is appending a single printable character to whichever field
+     *    currently has accessibility focus. Stated explicitly here and in
+     *    docs/DEVICE_CONTROL_PROTOCOL.md rather than pretending full
+     *    keyboard support exists.
      */
     fun handleKey(message: DeviceInputMessage) {
         if (message.action != "down") return
         val svc = service ?: return
+
+        val globalAction = when (message.key) {
+            "BACK" -> AccessibilityService.GLOBAL_ACTION_BACK
+            "HOME" -> AccessibilityService.GLOBAL_ACTION_HOME
+            "RECENTS" -> AccessibilityService.GLOBAL_ACTION_RECENTS
+            else -> null
+        }
+        if (globalAction != null) {
+            mainHandler.post { svc.performGlobalAction(globalAction) }
+            return
+        }
+
         val focused = svc.findFocus(AccessibilityNodeInfo.FOCUS_INPUT) ?: return
         if (!focused.isEditable) return
         val char = message.key?.takeIf { it.length == 1 } ?: return

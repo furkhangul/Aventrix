@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from app.integrations.email.base import EmailProvider
 
-logger = logging.getLogger("furoftheweak.email.mock")
+logger = logging.getLogger("aventrix.email.mock")
 
 
 @dataclass

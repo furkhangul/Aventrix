@@ -3,7 +3,7 @@
 ## Layout
 
 ```text
-FurOfTheWeak/
+Aventrix/
 ├── backend/
 │   └── app/
 │       ├── main.py            FastAPI app, middleware, mounts

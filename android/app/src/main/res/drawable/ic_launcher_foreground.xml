@@ -1,9 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Aventrix mark for the adaptive launcher icon: same X geometry as the web
+  favicon, scaled into the 108dp adaptive canvas' 72dp safe zone (centre
+  at 54,54) so no leg is cropped by a round/squircle mask.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M30,34 h48 a6,6 0 0 1 6,6 v28 a6,6 0 0 1 -6,6 h-16 l4,8 h-24 l4,-8 h-16 a6,6 0 0 1 -6,-6 v-28 a6,6 0 0 1 6,-6 z M36,42 v24 h36 v-24 z" />
+        android:pathData="M42,42 L66,66"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="9"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M66,42 L31,77"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="9"
+        android:strokeLineCap="round" />
 </vector>

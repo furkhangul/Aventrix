@@ -4,77 +4,93 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 12%;
+    --background: 250 30% 99%;
+    --foreground: 250 24% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 12%;
+    --card-foreground: 250 24% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 12%;
+    --popover-foreground: 250 24% 11%;
 
-    --primary: 243 75% 59%;
+    --primary: 258 88% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 10% 12%;
+    --secondary: 250 22% 96%;
+    --secondary-foreground: 250 24% 14%;
 
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
+    --muted: 250 20% 96%;
+    --muted-foreground: 250 8% 46%;
 
-    --accent: 262 83% 96%;
-    --accent-foreground: 243 75% 40%;
+    --accent: 258 85% 96%;
+    --accent-foreground: 258 70% 40%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 74% 54%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 71% 35%;
+    --success: 158 68% 35%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 26 30% 15%;
+    --warning: 33 94% 48%;
+    --warning-foreground: 28 40% 14%;
 
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 243 75% 59%;
+    --border: 250 18% 91%;
+    --input: 250 18% 91%;
+    --ring: 258 88% 60%;
 
-    --radius: 0.75rem;
+    --radius: 0.85rem;
+
+    /* Brand gradient — the logo's stops, reusable from Tailwind classes. */
+    --brand-from: 239 84% 67%;
+    --brand-via: 258 90% 66%;
+    --brand-to: 292 84% 61%;
+
+    /* Layered shadows: soft ambient + a tighter contact shadow. */
+    --shadow-sm: 0 1px 2px -1px hsl(250 30% 20% / 0.08), 0 1px 3px hsl(250 30% 20% / 0.05);
+    --shadow-md: 0 2px 4px -2px hsl(250 30% 20% / 0.08), 0 8px 20px -6px hsl(250 30% 20% / 0.1);
+    --shadow-lg: 0 4px 8px -4px hsl(250 30% 20% / 0.1), 0 24px 48px -12px hsl(250 30% 20% / 0.16);
+    --shadow-glow: 0 8px 28px -8px hsl(var(--primary) / 0.45);
   }
 
   .dark {
-    --background: 240 12% 7%;
-    --foreground: 240 10% 95%;
+    --background: 252 26% 7%;
+    --foreground: 250 22% 96%;
 
-    --card: 240 10% 10%;
-    --card-foreground: 240 10% 95%;
+    --card: 252 22% 10%;
+    --card-foreground: 250 22% 96%;
 
-    --popover: 240 10% 10%;
-    --popover-foreground: 240 10% 95%;
+    --popover: 252 22% 11%;
+    --popover-foreground: 250 22% 96%;
 
-    --primary: 243 82% 68%;
-    --primary-foreground: 240 12% 7%;
+    --primary: 258 92% 71%;
+    --primary-foreground: 252 30% 9%;
 
-    --secondary: 240 6% 16%;
-    --secondary-foreground: 240 10% 95%;
+    --secondary: 252 16% 17%;
+    --secondary-foreground: 250 22% 96%;
 
-    --muted: 240 6% 16%;
-    --muted-foreground: 240 5% 65%;
+    --muted: 252 16% 16%;
+    --muted-foreground: 250 10% 64%;
 
-    --accent: 243 35% 20%;
-    --accent-foreground: 243 82% 82%;
+    --accent: 258 40% 22%;
+    --accent-foreground: 258 90% 84%;
 
-    --destructive: 0 63% 55%;
+    --destructive: 0 68% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 55% 45%;
-    --success-foreground: 0 0% 100%;
+    --success: 158 58% 48%;
+    --success-foreground: 252 30% 9%;
 
-    --warning: 38 85% 55%;
-    --warning-foreground: 26 30% 10%;
+    --warning: 33 90% 58%;
+    --warning-foreground: 28 40% 10%;
 
-    --border: 240 6% 20%;
-    --input: 240 6% 20%;
-    --ring: 243 82% 68%;
+    --border: 252 14% 20%;
+    --input: 252 14% 22%;
+    --ring: 258 92% 71%;
+
+    --shadow-sm: 0 1px 2px -1px hsl(0 0% 0% / 0.5), 0 1px 3px hsl(0 0% 0% / 0.35);
+    --shadow-md: 0 2px 4px -2px hsl(0 0% 0% / 0.5), 0 8px 20px -6px hsl(0 0% 0% / 0.45);
+    --shadow-lg: 0 4px 8px -4px hsl(0 0% 0% / 0.5), 0 24px 48px -12px hsl(0 0% 0% / 0.6);
+    --shadow-glow: 0 8px 28px -8px hsl(var(--primary) / 0.5);
   }
 
   * {
@@ -85,10 +101,89 @@
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv11", "ss01";
   }
+
+  /* Slimmer, theme-aware scrollbars — the default chrome is the single
+     loudest thing on a dashboard full of scrollable panels. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+    background-clip: content-box;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Frosted bar/panel — used by the navbar and any overlay surface. */
+  .surface-glass {
+    @apply border-border/70 bg-background/70 backdrop-blur-xl backdrop-saturate-150;
+  }
+
+  /* Brand gradient as text, for headline accents and the empty-state art. */
+  .text-gradient {
+    @apply bg-gradient-to-br from-[hsl(var(--brand-from))] via-[hsl(var(--brand-via))] to-[hsl(var(--brand-to))] bg-clip-text text-transparent;
+  }
+
+  .bg-brand-gradient {
+    @apply bg-gradient-to-br from-[hsl(var(--brand-from))] via-[hsl(var(--brand-via))] to-[hsl(var(--brand-to))];
+  }
+
+  /* Cards that respond to the pointer without shifting layout. */
+  .card-interactive {
+    @apply transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md;
+  }
+
+  /* Ambient brand wash behind auth screens and hero panels. */
+  .aurora {
+    background-image:
+      radial-gradient(60rem 30rem at 12% -10%, hsl(var(--brand-from) / 0.18), transparent 60%),
+      radial-gradient(45rem 28rem at 95% 8%, hsl(var(--brand-to) / 0.15), transparent 60%),
+      radial-gradient(50rem 30rem at 50% 110%, hsl(var(--brand-via) / 0.14), transparent 60%);
+  }
+
+  /* Faint dot grid, layered under the aurora on full-bleed screens. */
+  .dot-grid {
+    background-image: radial-gradient(hsl(var(--foreground) / 0.07) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
 }
 
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;
+  }
+
+  /* Marks the animated element as its own layer for the duration of a
+     transform/opacity animation — avoids text repaint shimmer. */
+  .will-animate {
+    will-change: transform, opacity;
   }
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-time local dev bootstrap for FurOfTheWeak (macOS/Linux).
+# One-time local dev bootstrap for Aventrix (macOS/Linux).
 #
 # Creates .env from .env.example if it doesn't exist yet, checks for
 # Docker, and prints the next command to run. Safe to re-run — never

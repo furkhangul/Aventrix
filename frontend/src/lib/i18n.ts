@@ -49,7 +49,7 @@ i18n
     detection: {
       order: ["localStorage", "navigator"],
       caches: ["localStorage"],
-      lookupLocalStorage: "furoftheweak_language",
+      lookupLocalStorage: "aventrix_language",
     },
     interpolation: { escapeValue: false },
   });

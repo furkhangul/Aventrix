@@ -57,7 +57,10 @@
     "notifications": "Bildirimler",
     "devices": "Cihazlar",
     "settings": "Ayarlar",
-    "soon": "Yakında"
+    "soon": "Yakında",
+    "groupWorkspace": "Çalışma alanı",
+    "groupToolkit": "Araçlar",
+    "groupPlatform": "Platform"
   },
   "navbar": {
     "toggleTheme": "Temayı değiştir",
@@ -76,7 +79,7 @@
   "auth": {
     "login": {
       "title": "Tekrar hoş geldiniz",
-      "subtitle": "FurOfTheWeak çalışma alanınıza giriş yapın",
+      "subtitle": "Aventrix çalışma alanınıza giriş yapın",
       "email": "E-posta",
       "password": "Şifre",
       "forgotPassword": "Şifrenizi mi unuttunuz?",
@@ -699,9 +702,15 @@
   "devices": {
     "title": "Cihazlar",
     "subtitle": "Kendi Android telefonunuzun ekranını tarayıcıdan görüntüleyin ve kontrol edin. Eşleştirme, fiziksel cihazda bir kodun onaylanmasını gerektirir — hiçbir cihaz sessizce eklenmez.",
+    "summary": "{{total}} cihaz · {{online}} çevrimiçi",
     "pairNewDevice": "Yeni cihaz eşleştir",
     "pairDialogTitle": "Cihaz eşleştir",
-    "pairInstructions": "Bu QR kodu telefonunuzdaki FurOfTheWeak uygulamasıyla tarayın veya kodu manuel girin.",
+    "pairInstructions": "Bu QR kodu telefonunuzdaki Aventrix uygulamasıyla tarayın veya kodu manuel girin.",
+    "pairStepInstall": "Telefonunuzda Aventrix Device uygulamasını açın.",
+    "pairStepServer": "Henüz yapmadıysanız uygulamada bu sunucunun adresini girin.",
+    "pairStepCode": "Yukarıdaki kodu girip Eşleştir'e dokunun.",
+    "pairedTitle": "Cihaz eşleştirildi",
+    "pairedBody": "Cihaz listenizde. Uygulamada ekran paylaşımını açın, ardından Bağlan'a basın.",
     "codeExpiresIn": "{{seconds}} sn içinde sona erecek",
     "codeExpired": "Bu kodun süresi doldu.",
     "generateNewCode": "Yeni kod oluştur",
@@ -717,20 +726,103 @@
     "statusActive": "Aktif",
     "statusRevoked": "İptal edildi",
     "neverSeen": "Hiç",
+    "online": "Çevrimiçi",
+    "offline": "Çevrimdışı",
+    "offlineHint": "Telefon sunucuya bildirim göndermiyor. Aventrix Device uygulamasını açıp ekran paylaşımını etkinleştirin.",
     "connect": "Bağlan",
+    "reconnect": "Yeniden bağlan",
+    "tryAgain": "Tekrar dene",
     "revoke": "İptal et",
     "revokeConfirmTitle": "Bu cihaz iptal edilsin mi?",
     "revokeConfirmBody": "Bu işlem aktif oturumu hemen sonlandırır; yeniden bağlanmak için cihazın tekrar eşleştirilmesi gerekir.",
+    "renameTitle": "Cihazı yeniden adlandır",
+    "nameLabel": "Cihaz adı",
     "controlTitle": "Uzaktan kontrol",
     "waitingForDevice": "Cihazın bağlanması bekleniyor…",
     "disconnect": "Bağlantıyı kes",
+    "fullscreen": "Tam ekran",
     "controlHint": "Dokunma girişi göndermek için ekranda tıklayıp sürükleyin. Bu, kaydedilmeyen, eşler arası canlı bir bağlantıdır.",
+    "inputUnavailable": "Dokunma girişi henüz kullanılamıyor — telefonda erişilebilirlik servisinin açık olması gerekir.",
+    "connectionPanel": "Bağlantı",
+    "navKeys": "Gezinme",
+    "navBack": "Geri",
+    "navHome": "Ana ekran",
+    "navRecents": "Son kullanılanlar",
+    "statDevice": "Cihaz",
+    "statResolution": "Çözünürlük",
+    "statFps": "Kare/sn",
+    "statBitrate": "Bit hızı",
+    "statLatency": "Gecikme",
+    "onThePhone": "Telefonda",
+    "phoneStepOpen": "Aventrix Device uygulamasını açın.",
+    "phoneStepToggle": "Ekran paylaşımını açın.",
+    "phoneStepAccept": "Ekran kaydı iznini onaylayın.",
+    "sessionEndedTitle": "Oturum sona erdi",
+    "sessionEndedBody": "Bağlantı kapatıldı. Telefon hazır olduğunda yeni bir oturum başlatabilirsiniz.",
     "connectionState": {
+      "idle": "Bağlı değil",
       "starting": "Oturum başlatılıyor",
-      "waiting_for_peer": "Cihaz bekleniyor",
-      "connected": "Bağlandı",
+      "waiting_for_device": "Cihaz bekleniyor",
+      "negotiating": "El sıkışılıyor",
+      "connected": "Canlı",
       "ended": "Oturum sona erdi",
       "error": "Bağlantı başarısız"
+    },
+    "step": {
+      "starting": {
+        "title": "Oturum oluşturuldu",
+        "hint": "Sunucuda yer ayrılıyor…"
+      },
+      "waiting_for_device": {
+        "title": "Telefon katılıyor",
+        "hint": "Uygulama birkaç saniyede bir kontrol ediyor — ekran paylaşımının açık olduğundan emin olun."
+      },
+      "negotiating": {
+        "title": "Ekran aktarılıyor",
+        "hint": "Telefon katıldı; video kanalı açılıyor…"
+      }
+    },
+    "error": {
+      "start_failed": {
+        "title": "Oturum başlatılamadı",
+        "body": "Sunucu isteği reddetti. Birazdan tekrar deneyin."
+      },
+      "not_enabled": {
+        "title": "Cihaz kontrolü etkin değil",
+        "body": "Sunucuda ENABLE_DEVICE_CONTROL kapalı."
+      },
+      "device_offline": {
+        "title": "Cihaz kullanılamıyor",
+        "body": "Bu cihaz iptal edilmiş veya artık eşleştirilmiş değil."
+      },
+      "signaling_failed": {
+        "title": "Sunucuya ulaşılamadı",
+        "body": "Sinyalleşme bağlantısı kurulamadı. Ağınızı kontrol edip tekrar deneyin."
+      },
+      "ticket_rejected": {
+        "title": "Oturum bileti reddedildi",
+        "body": "Bilet kullanılmadan süresi doldu. Yeni bir oturum başlatmak genelde çözer."
+      },
+      "session_gone": {
+        "title": "Oturum artık yok",
+        "body": "Süresi doldu veya başka bir yerde sonlandırıldı. Yeni bir oturum başlatın."
+      },
+      "device_timeout": {
+        "title": "Telefon hiç katılmadı",
+        "body": "Aventrix Device uygulamasını açın, ekran paylaşımını etkinleştirin ve ekran kaydı iznini onaylayın."
+      },
+      "negotiation_timeout": {
+        "title": "Görüntü gelmedi",
+        "body": "Telefon katıldı ama ekranını göndermedi. Ekran kaydı izninin onaylandığından emin olun."
+      },
+      "peer_failed": {
+        "title": "Doğrudan bağlantı kurulamadı",
+        "body": "İki cihaz arasında ağ yolu bulunamadı. Farklı ağlardaysanız çalışan bir TURN sunucusu gerekir."
+      },
+      "connection_lost": {
+        "title": "Bağlantı koptu",
+        "body": "Telefonla bağlantı düştü. Yeniden bağlanmayı deneyin."
+      }
     }
   },
   "notifications": {

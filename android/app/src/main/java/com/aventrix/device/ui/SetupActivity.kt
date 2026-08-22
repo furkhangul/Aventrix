@@ -1,11 +1,11 @@
-package com.furoftheweak.device.ui
+package com.aventrix.device.ui
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.furoftheweak.device.R
-import com.furoftheweak.device.databinding.ActivitySetupBinding
-import com.furoftheweak.device.storage.SecureStore
+import com.aventrix.device.R
+import com.aventrix.device.databinding.ActivitySetupBinding
+import com.aventrix.device.storage.SecureStore
 
 /** One-time server base URL entry — no fixed prod host exists yet (see DEVICE_CONTROL_PROTOCOL.md). */
 class SetupActivity : AppCompatActivity() {

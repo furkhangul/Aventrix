@@ -21,11 +21,11 @@ import redis.asyncio as redis
 
 from app.core.config import get_settings
 
-logger = logging.getLogger("furoftheweak.workers.queue")
+logger = logging.getLogger("aventrix.workers.queue")
 settings = get_settings()
 
-ENRICH_VISIT_QUEUE = "furoftheweak:queue:enrich_visit"
-WEBHOOK_DELIVERY_QUEUE = "furoftheweak:queue:webhook_delivery"
+ENRICH_VISIT_QUEUE = "aventrix:queue:enrich_visit"
+WEBHOOK_DELIVERY_QUEUE = "aventrix:queue:webhook_delivery"
 ENQUEUE_TIMEOUT_SECONDS = 1.0
 
 _redis_client: redis.Redis | None = None

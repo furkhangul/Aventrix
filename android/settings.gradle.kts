@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "FurOfTheWeak Device"
+rootProject.name = "Aventrix Device"
 include(":app")

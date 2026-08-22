@@ -148,6 +148,28 @@ async def start_session(
         raise NotFoundError()
 
     now = datetime.now(timezone.utc)
+
+    # Supersede anything still open for this device. Without this, a
+    # refreshed browser tab leaves its old PENDING session behind and the
+    # phone's next poll can hand back that dead id instead of the new one.
+    superseded = await db.execute(
+        select(DeviceSession).where(
+            DeviceSession.device_id == device.id,
+            DeviceSession.status.in_([DeviceSessionStatus.PENDING, DeviceSessionStatus.ACTIVE]),
+        )
+    )
+    for stale in superseded.scalars().all():
+        stale.status = DeviceSessionStatus.ENDED
+        stale.ended_at = now
+        stale.ended_reason = "superseded"
+        try:
+            await device_signaling_service.publish_to_both(
+                stale.id, {"type": "bye", "data": {"reason": "superseded"}}
+            )
+            await device_signaling_service.clear_session(stale.id)
+        except Exception:
+            pass
+
     session = DeviceSession(
         device_id=device.id,
         user_id=user_id,
@@ -189,6 +211,7 @@ async def end_session(
 
     await db.commit()
     await db.refresh(session)
+    await device_signaling_service.clear_session(session.id)
     return session
 
 
@@ -241,8 +264,20 @@ async def get_pending_session(db: AsyncSession, *, device_id: uuid.UUID, device_
     if not constant_time_compare(device.device_secret_hash, hash_token(device_secret)):
         raise InvalidCredentialsError()
 
-    session = await get_latest_pending_session_for_device(db, device_id=device_id)
-    if not session or as_aware_utc(session.expires_at) < datetime.now(timezone.utc):
+    now = datetime.now(timezone.utc)
+
+    # Every poll is a check-in, session or not: the device list's online
+    # indicator is derived from last_seen_at, and "the app is open and ready"
+    # is exactly what it needs to mean.
+    device.last_seen_at = now
+    await db.commit()
+
+    session = await get_latest_pending_session_for_device(
+        db,
+        device_id=device_id,
+        not_before=now - timedelta(seconds=settings.device_session_pending_ttl_seconds),
+    )
+    if not session or as_aware_utc(session.expires_at) < now:
         return None
     return session.id
 
@@ -259,8 +294,21 @@ async def validate_ws_ticket(ticket: str, *, expected_session_id: uuid.UUID) -> 
     return payload
 
 
-async def mark_session_active_on_connect(db: AsyncSession, *, session_id: uuid.UUID) -> None:
-    """Best-effort: flips PENDING -> ACTIVE on the first peer to connect."""
+async def mark_session_active_on_connect(db: AsyncSession, *, session_id: uuid.UUID, role: str) -> None:
+    """
+    Flips PENDING -> ACTIVE when the *device* joins — deliberately not on the
+    first peer of either kind.
+
+    PENDING is what get_pending_session() looks for, and the controller opens
+    its signaling socket within milliseconds of creating the session, well
+    before the phone's next poll. Flipping on the controller's connect
+    therefore made every session invisible to the device it was for: the
+    phone polled, saw nothing, and the browser waited for a peer that was
+    never told to come. ACTIVE now means "both peers are on the wire", which
+    is also what it has to mean for the session list to be readable.
+    """
+    if role != "target":
+        return
     session = await get_session_by_id(db, session_id)
     if session and session.status == DeviceSessionStatus.PENDING:
         session.status = DeviceSessionStatus.ACTIVE
@@ -275,6 +323,7 @@ async def mark_session_ended(db: AsyncSession, *, session_id: uuid.UUID, reason:
         session.ended_at = datetime.now(timezone.utc)
         session.ended_reason = reason
         await db.commit()
+    await device_signaling_service.clear_session(session_id)
 
 
 async def sweep_stale_devices(db: AsyncSession) -> int:

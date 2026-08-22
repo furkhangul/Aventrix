@@ -2,11 +2,18 @@
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#6366F1"/>
-      <stop offset="1" stop-color="#A855F7"/>
+      <stop offset="0.55" stop-color="#8B5CF6"/>
+      <stop offset="1" stop-color="#D946EF"/>
     </linearGradient>
+    <clipPath id="tile">
+      <rect width="64" height="64" rx="18"/>
+    </clipPath>
   </defs>
-  <rect width="64" height="64" rx="16" fill="url(#g)"/>
-  <rect x="14" y="24" width="22" height="16" rx="8" stroke="white" stroke-width="4"/>
-  <rect x="28" y="24" width="22" height="16" rx="8" stroke="white" stroke-width="4" fill="url(#g)"/>
-  <circle cx="47" cy="17" r="3.5" fill="white"/>
+  <g clip-path="url(#tile)">
+    <rect width="64" height="64" fill="url(#g)"/>
+    <g stroke="#ffffff" stroke-width="9" stroke-linecap="round">
+      <path d="M16 16 L48 48"/>
+      <path d="M48 16 L16 48"/>
+    </g>
+  </g>
 </svg>

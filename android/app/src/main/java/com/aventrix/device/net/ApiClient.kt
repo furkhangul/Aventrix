@@ -1,4 +1,4 @@
-package com.furoftheweak.device.net
+package com.aventrix.device.net
 
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType

@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Logo } from "@/components/logo";
 import { useTheme } from "@/components/theme-provider";
 import { MobileSidebarContent } from "@/components/layout/sidebar";
 import { useLogout, useMe } from "@/hooks/use-auth";
@@ -34,7 +35,7 @@ function NotificationBell() {
         <Button variant="ghost" size="icon" aria-label={t("navbar.notifications")} className="relative">
           <Bell className="h-4 w-4" />
           {unreadCount > 0 && (
-            <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-medium text-destructive-foreground">
+            <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-medium text-destructive-foreground ring-2 ring-background">
               {unreadCount > 9 ? "9+" : unreadCount}
             </span>
           )}
@@ -142,7 +143,7 @@ export function Navbar() {
     .toUpperCase();
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur sm:px-6">
+    <header className="surface-glass sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b px-4 sm:px-6">
       <div className="flex items-center gap-3">
         <DialogPrimitive.Root open={mobileOpen} onOpenChange={setMobileOpen}>
           <DialogPrimitive.Trigger asChild>
@@ -152,12 +153,15 @@ export function Navbar() {
           </DialogPrimitive.Trigger>
           <DialogPrimitive.Portal>
             <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50" />
-            <DialogPrimitive.Content className="fixed left-0 top-0 z-50 h-full w-72 border-r border-border bg-card outline-none">
+            <DialogPrimitive.Content className="fixed left-0 top-0 z-50 h-full w-72 animate-fade-in border-r border-border bg-card outline-none">
               <DialogPrimitive.Title className="sr-only">Navigation</DialogPrimitive.Title>
               <MobileSidebarContent onNavigate={() => setMobileOpen(false)} />
             </DialogPrimitive.Content>
           </DialogPrimitive.Portal>
         </DialogPrimitive.Root>
+
+        {/* The sidebar owns the logo on desktop; on mobile it lives here. */}
+        <Logo mark size="sm" className="lg:hidden" />
       </div>
 
       <div className="flex items-center gap-2">
@@ -167,8 +171,8 @@ export function Navbar() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="rounded-full outline-none ring-offset-2 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring">
-              <Avatar>
+            <button className="rounded-full outline-none ring-offset-2 ring-offset-background transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring">
+              <Avatar className="ring-2 ring-border">
                 {user?.avatar_url && <AvatarImage src={user.avatar_url} alt={user.full_name ?? user.email} />}
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>

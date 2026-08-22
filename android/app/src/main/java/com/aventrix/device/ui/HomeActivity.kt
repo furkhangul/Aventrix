@@ -1,4 +1,4 @@
-package com.furoftheweak.device.ui
+package com.aventrix.device.ui
 
 import android.Manifest
 import android.content.Intent
@@ -12,12 +12,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
-import com.furoftheweak.device.R
-import com.furoftheweak.device.accessibility.DeviceControlAccessibilityService
-import com.furoftheweak.device.control.ControlForegroundService
-import com.furoftheweak.device.databinding.ActivityHomeBinding
-import com.furoftheweak.device.net.ApiClientFactory
-import com.furoftheweak.device.storage.SecureStore
+import com.aventrix.device.R
+import com.aventrix.device.accessibility.DeviceControlAccessibilityService
+import com.aventrix.device.control.ControlForegroundService
+import com.aventrix.device.databinding.ActivityHomeBinding
+import com.aventrix.device.net.ApiClientFactory
+import com.aventrix.device.storage.SecureStore
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive

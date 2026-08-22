@@ -56,7 +56,10 @@
     "webhooks": "Webhooks",
     "notifications": "Benachrichtigungen",
     "settings": "Einstellungen",
-    "soon": "Bald"
+    "soon": "Bald",
+    "groupWorkspace": "Arbeitsbereich",
+    "groupToolkit": "Werkzeuge",
+    "groupPlatform": "Plattform"
   },
   "navbar": {
     "toggleTheme": "Design umschalten",
@@ -75,7 +78,7 @@
   "auth": {
     "login": {
       "title": "Willkommen zurück",
-      "subtitle": "Melde dich bei deinem FurOfTheWeak-Arbeitsbereich an",
+      "subtitle": "Melde dich bei deinem Aventrix-Arbeitsbereich an",
       "email": "E-Mail",
       "password": "Passwort",
       "forgotPassword": "Passwort vergessen?",
@@ -612,5 +615,29 @@
     "prefLinkFirstVisit": "Ein Link seinen ersten Besuch erhält",
     "prefWebhookFailed": "Eine Webhook-Zustellung dauerhaft fehlschlägt",
     "prefSecurityWarning": "Ein Sicherheitsscan eine niedrige Bewertung findet"
+  },
+  "devices": {
+    "connectionState": {
+      "idle": "Nicht verbunden",
+      "starting": "Sitzung wird gestartet",
+      "waiting_for_device": "Warte auf Gerät",
+      "negotiating": "Verhandlung läuft",
+      "connected": "Live",
+      "ended": "Sitzung beendet",
+      "error": "Verbindung fehlgeschlagen"
+    },
+    "online": "Online",
+    "offline": "Offline",
+    "connect": "Verbinden",
+    "reconnect": "Erneut verbinden",
+    "fullscreen": "Vollbild",
+    "renameTitle": "Gerät umbenennen",
+    "nameLabel": "Gerätename",
+    "navKeys": "Navigation",
+    "navBack": "Zurück",
+    "navHome": "Startseite",
+    "navRecents": "Zuletzt",
+    "connectionPanel": "Verbindung",
+    "tryAgain": "Erneut versuchen"
   }
 }

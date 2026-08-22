@@ -193,7 +193,7 @@ async def test_webhook(db: AsyncSession, *, user_id: uuid.UUID, webhook_id: uuid
     delivery = WebhookDelivery(
         webhook_id=webhook.id,
         event_type="webhook.test",
-        payload={"message": "This is a test delivery from FurOfTheWeak.", "webhook_id": str(webhook.id)},
+        payload={"message": "This is a test delivery from Aventrix.", "webhook_id": str(webhook.id)},
     )
     db.add(delivery)
     await db.flush()

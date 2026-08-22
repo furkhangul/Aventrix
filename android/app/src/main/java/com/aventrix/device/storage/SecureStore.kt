@@ -1,4 +1,4 @@
-package com.furoftheweak.device.storage
+package com.aventrix.device.storage
 
 import android.content.Context
 import android.content.SharedPreferences

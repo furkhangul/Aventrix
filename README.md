@@ -1,4 +1,4 @@
-# FurOfTheWeak
+# Aventrix
 
 **A URL intelligence & campaign management platform**, done responsibly: create tracked links, organize them into campaigns, generate QR codes, run domain/security reconnaissance, and see privacy-respecting analytics about who's clicking — with explicit visitor consent built into the core flow, not bolted on afterwards.
 
@@ -124,7 +124,7 @@ app/
 ## Project structure
 
 ```text
-FurOfTheWeak/
+Aventrix/
 ├── android/       companion Android client (device control)
 ├── backend/       FastAPI application + Alembic migrations + tests
 ├── frontend/      React + TypeScript + Vite SPA

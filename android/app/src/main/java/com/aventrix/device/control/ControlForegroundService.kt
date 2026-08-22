@@ -1,4 +1,4 @@
-package com.furoftheweak.device.control
+package com.aventrix.device.control
 
 import android.app.Activity
 import android.app.Notification
@@ -14,14 +14,14 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.WindowManager
 import androidx.core.app.NotificationCompat
-import com.furoftheweak.device.R
-import com.furoftheweak.device.net.ApiClientFactory
-import com.furoftheweak.device.net.DeviceWsTicketResponse
-import com.furoftheweak.device.net.SessionTokenRequest
-import com.furoftheweak.device.net.SignalMessage
-import com.furoftheweak.device.net.SignalingListener
-import com.furoftheweak.device.net.SignalingSocket
-import com.furoftheweak.device.storage.SecureStore
+import com.aventrix.device.R
+import com.aventrix.device.net.ApiClientFactory
+import com.aventrix.device.net.DeviceWsTicketResponse
+import com.aventrix.device.net.SessionTokenRequest
+import com.aventrix.device.net.SignalMessage
+import com.aventrix.device.net.SignalingListener
+import com.aventrix.device.net.SignalingSocket
+import com.aventrix.device.storage.SecureStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -218,7 +218,7 @@ class ControlForegroundService : Service() {
         screenCapturer.startCapture(displayMetrics.widthPixels, displayMetrics.heightPixels, 30)
 
         val track = factory.createVideoTrack("screen0", source).also { videoTrack = it }
-        pc.addTrack(track, listOf("furoftheweak-stream"))
+        pc.addTrack(track, listOf("aventrix-stream"))
 
         val channel = pc.createDataChannel("input", DataChannel.Init()).also { dataChannel = it }
         channel.registerObserver(object : DataChannel.Observer {

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FurOfTheWeak Device</string>
+    <string name="app_name">Aventrix Device</string>
 
     <string name="setup_title">Sunucu Adresi</string>
     <string name="setup_hint">https://xxxx.trycloudflare.com</string>
@@ -19,11 +19,11 @@
 
     <string name="control_notification_channel_name">Cihaz Kontrolü</string>
     <string name="control_notification_title">Ekran paylaşımı etkin</string>
-    <string name="control_notification_text">FurOfTheWeak web panelinden bu cihaz görüntüleniyor/kontrol ediliyor</string>
+    <string name="control_notification_text">Aventrix web panelinden bu cihaz görüntüleniyor/kontrol ediliyor</string>
 
-    <string name="accessibility_service_description">FurOfTheWeak web panelinden gelen dokunma/kaydırma komutlarını bu cihazda uygulayabilmek için gereklidir. Sadece aktif bir kontrol oturumu sırasında kullanılır.</string>
+    <string name="accessibility_service_description">Aventrix web panelinden gelen dokunma/kaydırma komutlarını bu cihazda uygulayabilmek için gereklidir. Sadece aktif bir kontrol oturumu sırasında kullanılır.</string>
     <string name="accessibility_prompt_title">Erişilebilirlik izni gerekli</string>
-    <string name="accessibility_prompt_message">Uzaktan dokunma/kontrol için Ayarlar &gt; Erişilebilirlik bölümünden "FurOfTheWeak Device" servisini açman gerekiyor.</string>
+    <string name="accessibility_prompt_message">Uzaktan dokunma/kontrol için Ayarlar &gt; Erişilebilirlik bölümünden "Aventrix Device" servisini açman gerekiyor.</string>
     <string name="accessibility_prompt_open_settings">Ayarları Aç</string>
     <string name="common_cancel">Vazgeç</string>
 </resources>

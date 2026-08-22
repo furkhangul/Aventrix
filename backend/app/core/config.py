@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     )
 
     # App
-    app_name: str = "FurOfTheWeak"
+    app_name: str = "Aventrix"
     app_env: str = "development"
     app_debug: bool = True
     app_secret_key: str = "dev-secret-change-me"
@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     # Database
     database_url: str = (
-        "postgresql+asyncpg://furoftheweak:change-me@localhost:5432/furoftheweak"
+        "postgresql+asyncpg://aventrix:change-me@localhost:5432/aventrix"
     )
 
     # Redis
@@ -60,7 +60,7 @@ class Settings(BaseSettings):
     security_scan_alert_threshold: int = 60
 
     # Seed
-    seed_admin_email: str = "admin@furoftheweak.local"
+    seed_admin_email: str = "admin@aventrix.local"
 
     # IP intelligence
     ip_provider: str = "mock"
@@ -76,7 +76,7 @@ class Settings(BaseSettings):
     # Email
     email_provider: str = "mock"
     email_api_key: str | None = None
-    email_from_address: str = "no-reply@furoftheweak.local"
+    email_from_address: str = "no-reply@aventrix.local"
     smtp_host: str | None = None
     smtp_port: int = 587
     smtp_user: str | None = None
@@ -98,12 +98,15 @@ class Settings(BaseSettings):
     # docs/DEVICE_CONTROL_PROTOCOL.md. Off by default: it's the newest,
     # most privilege-sensitive module in the app.
     turn_shared_secret: str | None = None
-    turn_realm: str = "furoftheweak.local"
+    turn_realm: str = "aventrix.local"
     turn_server_url: str = "turn:localhost:3478"
     stun_server_url: str = "stun:stun.l.google.com:19302"
     device_pairing_code_ttl_seconds: int = 300
     device_session_max_duration_seconds: int = 3600
     device_ws_ticket_ttl_seconds: int = 60
+    # How recently the controller must have opened a session for a polling
+    # device to pick it up — see get_latest_pending_session_for_device.
+    device_session_pending_ttl_seconds: int = 180
 
     @property
     def cors_origins_list(self) -> list[str]:

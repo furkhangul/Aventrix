@@ -1,4 +1,4 @@
-package com.furoftheweak.device.net
+package com.aventrix.device.net
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

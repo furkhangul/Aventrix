@@ -48,7 +48,7 @@ RESERVED_WORDS = {
     "root",
     "null",
     "undefined",
-    "furoftheweak",
+    "aventrix",
     "support",
     "help",
     "about",
