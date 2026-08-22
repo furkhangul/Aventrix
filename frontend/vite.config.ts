@@ -30,6 +30,15 @@ export default defineConfig({
       "/api": {
         target: process.env.DEV_PROXY_TARGET || "http://localhost:8000",
         changeOrigin: true,
+        bypass(req) {
+          // Prefix matching means "/api" would otherwise also swallow SPA
+          // routes that merely start with those letters (e.g. /api-keys) —
+          // only proxy real API calls, which always start with "/api/".
+          const path = (req.url || "").split("?")[0];
+          if (path !== "/api" && !path.startsWith("/api/")) {
+            return "/index.html";
+          }
+        },
       },
       "/t": {
         target: process.env.DEV_PROXY_TARGET || "http://localhost:8000",

@@ -1,188 +1,182 @@
+<p align="right">Türkçe · <a href="./README.en.md">English</a></p>
+
 # Aventrix
 
-**A URL intelligence & campaign management platform**, done responsibly: create tracked links, organize them into campaigns, generate QR codes, run domain/security reconnaissance, and see privacy-respecting analytics about who's clicking — with explicit visitor consent built into the core flow, not bolted on afterwards.
+**Sorumlu bir URL zekâsı ve kampanya yönetimi platformu**: takip edilen bağlantılar oluştur, bunları kampanyalarda grupla, QR kod üret, alan adı/güvenlik keşfi (recon) yap ve kimlerin tıkladığını gizliliğe saygılı analitiklerle gör — ziyaretçi onayı sonradan eklenmiş bir yama değil, akışın merkezinde.
 
-Built as a full production-shaped SaaS: FastAPI + async SQLAlchemy backend, React + TypeScript frontend, Postgres, Redis, a background worker, and an optional companion Android app for remote device control — all containerized behind nginx.
+Tam üretim-şekilli bir SaaS olarak inşa edildi: FastAPI + async SQLAlchemy backend, React + TypeScript frontend, Postgres, Redis, bir arka plan worker'ı ve uzaktan cihaz kontrolü için opsiyonel bir Android companion uygulaması — hepsi nginx arkasında container'lanmış.
 
 ```mermaid
 flowchart LR
-    A[Dashboard] --> B[Campaign]
-    B --> C[Tracking link<br/>/t/CODE]
-    C --> D{Consent /<br/>password gate}
-    D --> E[Redirect]
-    D --> F[Visit recorded]
-    F --> G[IP intelligence<br/>async]
+    A[Panel] --> B[Kampanya]
+    B --> C[Takip bağlantısı<br/>/t/KOD]
+    C --> D{Onay /<br/>şifre kapısı}
+    D --> E[Yönlendirme]
+    D --> F[Ziyaret kaydedildi]
+    F --> G[IP zekâsı<br/>asenkron]
     G --> A
 ```
 
 <p align="center">
-  <img src="docs/screenshots/04-dashboard.png" alt="Aventrix dashboard" width="860">
+  <img src="docs/screenshots/04-dashboard.png" alt="Aventrix paneli" width="860">
 </p>
 
 ---
 
-## Table of contents
+## İçindekiler
 
-- [Highlights](#highlights)
-- [Feature tour](#feature-tour)
-- [Screenshots](#screenshots)
-- [Architecture](#architecture)
-- [Project structure](#project-structure)
-- [Tech stack](#tech-stack)
-- [Quick start](#quick-start)
-- [Documentation](#documentation)
-- [Security & privacy](#security--privacy)
-- [Testing](#testing)
-- [Roadmap](#roadmap-not-yet-built)
-- [License](#license)
+- [Öne çıkanlar](#öne-çıkanlar)
+- [Özellik turu](#özellik-turu)
+- [Ekran görüntüleri](#ekran-görüntüleri)
+- [Mimari](#mimari)
+- [Proje yapısı](#proje-yapısı)
+- [Teknoloji yığını](#teknoloji-yığını)
+- [Hızlı başlangıç](#hızlı-başlangıç)
+- [Dokümantasyon](#dokümantasyon)
+- [Güvenlik ve gizlilik](#güvenlik-ve-gizlilik)
+- [Testler](#testler)
+- [Yol haritası](#yol-haritası-henüz-yapılmadı)
+- [Lisans](#lisans)
 
 ---
 
-## Highlights
+## Öne çıkanlar
 
-- 🔗 **Smart links** — custom aliases, expiration, password protection, optional consent gate, reserved-word/collision checks, UTM builder
-- 📊 **Privacy-respecting analytics** — visit trends, top countries/devices/browsers/OS/referrers, date-range filters, CSV/JSON export
-- 🧭 **Recon & OSINT toolkit** — subdomain enumeration, DNS propagation checks, technology detection, robots.txt/sitemap parsing, cookie analysis, WHOIS, SSL inspection
-- 🛡️ **Security Center** — DNS/WHOIS/SSL checks, security-headers analyzer, reputation scoring, combined into a 0–100 score with history
-- 📱 **QR codes** — server-generated PNG/SVG, customizable size/colors/error-correction, optional embedded logo
-- 🧰 **URL tools** — encoder/decoder, UTM builder, SSRF-hardened URL analyzer, redirect-chain checker
-- 🔑 **Tiered API keys** — Free/Pro/Business, hashed at rest, per-tier rate limits
-- 🪝 **Webhooks** — HMAC-signed, event-driven, async delivery with retry backoff and a delivery log
-- 🔔 **Notifications** — in-app + email, triggered by first visits, expirations, webhook failures, low security scores
-- 🔐 **Serious auth** — refresh-token rotation, email verification, password reset, 2FA (TOTP + backup codes), session management, RBAC (`SUPER_ADMIN → ADMIN → MANAGER → USER → VIEWER`) enforced server-side
-- 📲 **Devices module** — AirDroid-style remote screen control via a companion Android client
+- 🔗 **Akıllı bağlantılar** — özel takma adlar, son kullanma tarihi, şifre koruması, opsiyonel onay kapısı, ayrılmış kelime/çakışma kontrolleri, UTM oluşturucu
+- 📊 **Gizliliğe saygılı analitik** — ziyaret trendleri, en çok ülke/cihaz/tarayıcı/işletim sistemi/yönlendiren, tarih aralığı filtreleri, CSV/JSON dışa aktarma
+- 🧭 **Keşif ve OSINT araç seti** — alt alan adı taraması, DNS yayılım kontrolleri, teknoloji tespiti, robots.txt/sitemap ayrıştırma, çerez analizi, WHOIS, SSL incelemesi
+- 🛡️ **Güvenlik Merkezi** — DNS/WHOIS/SSL kontrolleri, güvenlik başlığı analizörü, itibar puanlaması; hepsi geçmişiyle birlikte 0-100 arası tek bir puana toplanıyor
+- 📱 **QR kodları** — sunucu tarafında üretilen PNG/SVG, özelleştirilebilir boyut/renk/hata düzeltme, opsiyonel gömülü logo
+- 🧰 **URL araçları** — kodlayıcı/çözücü, UTM oluşturucu, SSRF'ye karşı sertleştirilmiş URL analizörü, yönlendirme zinciri denetleyicisi
+- 🔑 **Katmanlı API anahtarları** — Free/Pro/Business, kayıtta hash'lenmiş, katman başına hız sınırı
+- 🪝 **Webhook'lar** — HMAC imzalı, olay tabanlı, yeniden deneme geri çekilmesiyle asenkron teslimat ve teslimat günlüğü
+- 🔔 **Bildirimler** — uygulama içi + e-posta, ilk ziyaretler, son kullanma tarihleri, webhook hataları ve düşük güvenlik puanlarıyla tetiklenir
+- 🔐 **Ciddi kimlik doğrulama** — refresh-token rotasyonu, e-posta doğrulama, şifre sıfırlama, 2FA (TOTP + yedek kodlar), oturum yönetimi, sunucu tarafında zorunlu kılınan RBAC (`SUPER_ADMIN → ADMIN → MANAGER → USER → VIEWER`)
+- 📲 **Cihazlar modülü** — bir Android companion istemcisi üzerinden AirDroid tarzı uzaktan ekran kontrolü
 
-## Feature tour
+## Özellik turu
 
-### Links & campaigns
-Create tracked links with custom aliases, expiration dates, password protection, and an optional visitor consent gate. Group links into campaigns and drill into per-campaign performance: total clicks, unique visitors, CTR, top country/device/browser, and a visit timeline. The redirect system never trusts request input for its target — the destination is only ever read back from the database, closing off the usual open-redirect surface.
+### Bağlantılar ve kampanyalar
+Özel takma adlar, son kullanma tarihleri, şifre koruması ve opsiyonel ziyaretçi onay kapısıyla takip edilen bağlantılar oluştur. Bağlantıları kampanyalarda grupla ve kampanya bazlı performansa in: toplam tıklama, tekil ziyaretçi, TO (CTR), en çok ülke/cihaz/tarayıcı ve bir ziyaret zaman çizelgesi. Yönlendirme sistemi hedefi asla istek girdisine güvenmez — hedef adres yalnızca veritabanından geri okunur, bu da klasik açık-yönlendirme (open redirect) açığını kapatır.
 
-### Analytics
-A filterable, exportable analytics page: stat cards, visit trends over time, and breakdowns by country, device, browser, OS, and referrer. Every visit records IP intelligence (mock provider by default, real-provider adapter ready to wire in) and UA-derived signals, including a bot-confidence score. The raw client IP is recorded on every visit; the richer device/browser/UTM fingerprint is only captured when the visitor has explicitly consented (see [`docs/SECURITY.md`](./docs/SECURITY.md#privacy)).
+### Analitik
+Filtrelenebilir, dışa aktarılabilir bir analitik sayfası: istatistik kartları, zaman içindeki ziyaret trendleri, ülke/cihaz/tarayıcı/işletim sistemi/yönlendiren kırılımları. Her ziyaret IP zekâsını (varsayılan olarak mock sağlayıcı, gerçek sağlayıcı adaptörü bağlanmaya hazır) ve bot-güven skoru dahil UA kaynaklı sinyalleri kaydeder. Ham istemci IP'si her ziyarette kaydedilir; daha zengin cihaz/tarayıcı/UTM parmak izi ise yalnızca ziyaretçi açıkça onay verdiğinde yakalanır (bkz. [`docs/SECURITY.md`](./docs/SECURITY.md#privacy)).
 
-### Security Center & recon/OSINT
-Analyze any domain you own or are authorized to test:
+### Güvenlik Merkezi ve keşif/OSINT
+Sahibi olduğun ya da test etmeye açıkça yetkili olduğun herhangi bir alan adını analiz et:
 
-- DNS records, DNS propagation across resolvers, WHOIS, SSL certificate details
-- Subdomain enumeration and technology/stack detection
-- `robots.txt` / sitemap parsing
-- Cookie analysis (flags, scope, security attributes)
-- Security-headers analyzer (CSP, HSTS, X-Frame-Options, etc.) and a reputation check (mock by default, real adapter ready)
+- DNS kayıtları, çözümleyiciler arası DNS yayılımı, WHOIS, SSL sertifika detayları
+- Alt alan adı taraması ve teknoloji/yığın tespiti
+- `robots.txt` / sitemap ayrıştırma
+- Çerez analizi (bayraklar, kapsam, güvenlik öznitelikleri)
+- Güvenlik başlığı analizörü (CSP, HSTS, X-Frame-Options vb.) ve itibar kontrolü (varsayılan mock, gerçek adaptör hazır)
 
-All findings roll up into a single 0–100 security score with full scan history.
+Tüm bulgular tam tarama geçmişiyle birlikte tek bir 0-100 güvenlik puanına toplanır.
 
-### QR codes & URL tools
-Generate a QR code (PNG/SVG) for any link with configurable size, colors, error-correction level, and an optional embedded logo. The URL tools page adds an encoder/decoder, a UTM builder, an SSRF-hardened URL analyzer (title/description/favicon preview), and a redirect-chain checker.
+### QR kodları ve URL araçları
+Herhangi bir bağlantı için yapılandırılabilir boyut, renk, hata düzeltme seviyesi ve opsiyonel gömülü logo ile bir QR kodu (PNG/SVG) üret. URL araçları sayfası buna bir kodlayıcı/çözücü, bir UTM oluşturucu, SSRF'ye karşı sertleştirilmiş bir URL analizörü (başlık/açıklama/favicon önizlemesi) ve bir yönlendirme zinciri denetleyicisi ekler.
 
-### API, webhooks & notifications
-Issue tiered API keys (Free/Pro/Business) as an alternate credential for the whole API — shown once, hashed at rest, rate-limited per tier. Subscribe to webhooks (`link.created/clicked`, `campaign.created/completed`, `security.alert`) delivered with HMAC signatures, async retry backoff, and a delivery log. The in-app + email notification center covers a link's first visit, link expiry, webhook failures, and low security scores, with per-type email preferences.
+### API, webhook'lar ve bildirimler
+Tüm API için alternatif bir kimlik bilgisi olarak katmanlı API anahtarları (Free/Pro/Business) üret — bir kez gösterilir, kayıtta hash'lenir, katman başına hız sınırlıdır. Webhook'lara abone ol (`link.created/clicked`, `campaign.created/completed`, `security.alert`) — HMAC imzalarıyla, asenkron yeniden deneme geri çekilmesiyle ve bir teslimat günlüğüyle teslim edilir. Uygulama içi + e-posta bildirim merkezi bir bağlantının ilk ziyaretini, son kullanma tarihini, webhook hatalarını ve düşük güvenlik puanlarını, tür başına e-posta tercihleriyle birlikte kapsar.
 
-### Devices (remote control)
-A companion Android client (`android/`) pairs with the platform to enable AirDroid-style remote screen viewing/control, built alongside its own signaling protocol (see [`docs/DEVICE_CONTROL_PROTOCOL.md`](./docs/DEVICE_CONTROL_PROTOCOL.md)).
+### Cihazlar (uzaktan kontrol)
+Bir Android companion istemcisi (`android/`), kendi sinyalleşme protokolüyle birlikte inşa edilmiş AirDroid tarzı uzaktan ekran görüntüleme/kontrolü etkinleştirmek için platformla eşleşir (bkz. [`docs/DEVICE_CONTROL_PROTOCOL.md`](./docs/DEVICE_CONTROL_PROTOCOL.md)).
 
-### Security baseline (platform-wide)
-Rate limiting, security headers, CORS, a standard error envelope, structured JSON logs, an audit log, IDOR-safe ownership checks throughout, and SSRF-hardened outbound fetching everywhere a user-supplied URL is fetched server-side.
+### Güvenlik temeli (platform genelinde)
+Hız sınırlama, güvenlik başlıkları, CORS, standart bir hata zarfı, yapılandırılmış JSON loglar, bir denetim (audit) günlüğü, her yerde IDOR'a karşı güvenli sahiplik kontrolleri ve kullanıcı tarafından sağlanan bir URL'nin sunucu tarafında çekildiği her yerde SSRF'ye karşı sertleştirilmiş giden istekler.
 
-## Screenshots
+## Ekran görüntüleri
 
-Every screen below is a real capture of the running app (light and dark theme, empty states and populated ones) — not mockups.
+Aşağıdaki her ekran, gerçekten çalışan uygulamanın, oturum açılmış ve gerçek etkinlikle doldurulmuş hâlinin gerçek bir görüntüsüdür — kurgu değil, boş durum değil.
 
-### Sign-in & account
-
-<table>
-<tr>
-<td width="33%"><img src="docs/screenshots/01-login.png" alt="Login page"><br><sub>Login</sub></td>
-<td width="33%"><img src="docs/screenshots/02-register.png" alt="Register page"><br><sub>Create an account</sub></td>
-<td width="33%"><img src="docs/screenshots/03-forgot-password.png" alt="Forgot password page"><br><sub>Password reset</sub></td>
-</tr>
-</table>
-
-### Dashboard — light & dark
+### Giriş ve hesap
 
 <table>
 <tr>
-<td width="50%"><img src="docs/screenshots/04-dashboard.png" alt="Dashboard, light theme"><br><sub>Light theme</sub></td>
-<td width="50%"><img src="docs/screenshots/20-dashboard-dark.png" alt="Dashboard, dark theme"><br><sub>Dark theme</sub></td>
+<td width="33%"><img src="docs/screenshots/01-login.png" alt="Giriş sayfası"><br><sub>Giriş</sub></td>
+<td width="33%"><img src="docs/screenshots/02-register.png" alt="Kayıt sayfası"><br><sub>Hesap oluştur</sub></td>
+<td width="33%"><img src="docs/screenshots/03-forgot-password.png" alt="Şifremi unuttum sayfası"><br><sub>Şifre sıfırlama</sub></td>
 </tr>
 </table>
 
-A summary across every project: total links, visits, unique visitors, today's visits, active projects, and a uniqueness ratio, plus a visit trend chart and top countries/devices/browsers/referrers.
-
-### Projects — from empty state to a live campaign
+### Panel — açık & koyu tema, gerçek trafikle
 
 <table>
 <tr>
-<td width="50%"><img src="docs/screenshots/05-projects-empty.png" alt="Projects page, empty state"><br><sub>1. Empty state — first-run guidance</sub></td>
-<td width="50%"><img src="docs/screenshots/06-projects-create.png" alt="Create project dialog"><br><sub>2. Create a project</sub></td>
-</tr>
-<tr>
-<td width="50%"><img src="docs/screenshots/07-projects-list.png" alt="Projects list with a campaign"><br><sub>3. The new project, in the list</sub></td>
-<td width="50%"><img src="docs/screenshots/08-project-detail.png" alt="Project detail page"><br><sub>4. Project detail — performance at a glance</sub></td>
+<td width="50%"><img src="docs/screenshots/04-dashboard.png" alt="Panel, açık tema, gerçek ziyaretlerle dolu"><br><sub>Açık tema</sub></td>
+<td width="50%"><img src="docs/screenshots/05-dashboard-dark.png" alt="Panel, koyu tema, gerçek ziyaretlerle dolu"><br><sub>Koyu tema</sub></td>
 </tr>
 </table>
 
-### Links — creating a tracked link end to end
+Toplam bağlantı, ziyaret, tekil ziyaretçi, bugünkü ziyaretler, aktif proje sayısı ve tekillik oranı, bir ziyaret trend grafiği ve en çok ülke/cihaz/tarayıcı — hepsi bu tur sırasında gerçekten tıklanan bağlantılardan gelen gerçek rakamlar.
+
+### Projeler ve bağlantılar, gerçek tıklama verisiyle
 
 <table>
 <tr>
-<td width="50%"><img src="docs/screenshots/09-links-empty.png" alt="Links page, empty state"><br><sub>1. Empty state</sub></td>
-<td width="50%"><img src="docs/screenshots/10-links-create.png" alt="Create tracking link dialog"><br><sub>2. Destination, alias, options, UTM tags</sub></td>
+<td width="50%"><img src="docs/screenshots/06-projects-list.png" alt="Projeler listesi"><br><sub>Projeler</sub></td>
+<td width="50%"><img src="docs/screenshots/07-project-detail.png" alt="Gerçek istatistiklerle proje detay sayfası"><br><sub>Proje detayı — gerçek ziyaret/tekil sayıları</sub></td>
 </tr>
 <tr>
-<td colspan="2"><img src="docs/screenshots/11-links-list.png" alt="Links list with created links"><br><sub>3. Both links, ready to track — visits, uniques, status, and per-row actions</sub></td>
+<td colspan="2"><img src="docs/screenshots/08-links-list.png" alt="Gerçek tıklama sayılarıyla bağlantılar listesi"><br><sub>Bağlantılar — her satır, altı farklı ülkeden simüle edilmiş tıklamalardan gelen gerçek ziyaret ve tekil ziyaretçi sayılarını gösteriyor</sub></td>
 </tr>
 </table>
 
-### Analytics
+### Analitik
 
-<p align="center"><img src="docs/screenshots/12-analytics.png" alt="Analytics page" width="860"></p>
+<p align="center"><img src="docs/screenshots/09-analytics.png" alt="Dolu grafik ve kırılımlarla analitik sayfası" width="860"></p>
 
-### URL Solutions toolkit
+### Güvenlik Merkezi — baştan sona gerçek bir tarama
 
-<p align="center"><img src="docs/screenshots/13-url-tools.png" alt="URL Solutions — encode/decode, UTM builder, analyzer, redirect checker, QR codes" width="860"></p>
+<p align="center"><img src="docs/screenshots/10-security-scan.png" alt="Bulgular, DNS ve WHOIS ile tamamlanmış example.com taraması" width="860"></p>
 
-### Security Center (recon / OSINT)
+`example.com` üzerinde canlı bir tarama: DNS kayıtları, IP/ASN bilgisi, önem derecesine göre işaretlenmiş eksik güvenlik başlıkları ve hesaplanmış bir 0-100 puan — bir placeholder ekran değil.
 
-<p align="center"><img src="docs/screenshots/14-security.png" alt="Security Center — domain reconnaissance" width="860"></p>
-
-### Platform — API, webhooks, notifications, devices, settings
+### URL Çözümleri — gerçek girdiyle çalıştırılmış her araç
 
 <table>
 <tr>
-<td width="50%"><img src="docs/screenshots/15-api.png" alt="API keys page"><br><sub>Tiered API keys</sub></td>
-<td width="50%"><img src="docs/screenshots/16-webhooks.png" alt="Webhooks page"><br><sub>Webhooks</sub></td>
+<td width="50%"><img src="docs/screenshots/11-urltools-encoder.png" alt="Gerçek bir sonuçla URL kodlayıcı/çözücü"><br><sub>Kodla / çöz</sub></td>
+<td width="50%"><img src="docs/screenshots/12-urltools-utm.png" alt="Gerçek bir sonuçla UTM oluşturucu"><br><sub>UTM oluşturucu</sub></td>
 </tr>
 <tr>
-<td width="50%"><img src="docs/screenshots/17-notifications.png" alt="Notifications page"><br><sub>Notifications</sub></td>
-<td width="50%"><img src="docs/screenshots/18-devices.png" alt="Devices page"><br><sub>Devices (remote control)</sub></td>
+<td width="50%"><img src="docs/screenshots/13-urltools-analyzer.png" alt="Gerçek bir sonuçla URL analizcisi"><br><sub>URL analizcisi — canlı HTTP isteği, başlık, içerik türü</sub></td>
+<td width="50%"><img src="docs/screenshots/14-urltools-redirect.png" alt="Gerçek bir sonuçla yönlendirme zinciri denetleyicisi"><br><sub>Yönlendirme denetleyicisi</sub></td>
 </tr>
 <tr>
-<td colspan="2"><img src="docs/screenshots/19-settings.png" alt="Settings page"><br><sub>Settings</sub></td>
+<td colspan="2"><img src="docs/screenshots/15-urltools-qr.png" alt="Gerçek bir bağlantı için üretilmiş QR kod"><br><sub>QR kod oluşturucu — yukarıda oluşturulan bağlantılardan biri için gerçek bir QR</sub></td>
 </tr>
 </table>
 
-### Empty & error states
-
-Handled deliberately, not left as blank screens:
+### Platform — API, webhook'lar, bildirimler, cihazlar, ayarlar
 
 <table>
 <tr>
-<td width="50%"><img src="docs/screenshots/21-404.png" alt="404 page"><br><sub>404 — unknown app route</sub></td>
-<td width="50%"><img src="docs/screenshots/22-link-not-found.png" alt="Tracking link not found page"><br><sub>Unknown/expired tracking link</sub></td>
+<td width="50%"><img src="docs/screenshots/17-platform-api-list.png" alt="Oluşturulmuş bir anahtarla API sayfası"><br><sub>Katmanlı API anahtarları</sub></td>
+<td width="50%"><img src="docs/screenshots/18-webhooks-list.png" alt="Oluşturulmuş bir webhook ile webhook'lar sayfası"><br><sub>Webhook'lar — HMAC imzalı, olaya abone</sub></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/screenshots/19-notifications.png" alt="Gerçek ilk-ziyaret bildirimleriyle bildirimler sayfası"><br><sub>Bildirimler — gerçek "ilk ziyaret" olayları</sub></td>
+<td width="50%"><img src="docs/screenshots/20-devices-pairing.png" alt="Canlı QR kod ve kodla cihaz eşleştirme diyaloğu"><br><sub>Cihazlar — bir telefonu eşleştirme (QR + kod, süreli)</sub></td>
+</tr>
+<tr>
+<td colspan="2"><img src="docs/screenshots/21-settings.png" alt="Ayarlar sayfası"><br><sub>Ayarlar</sub></td>
 </tr>
 </table>
 
-## Architecture
+> Cihazlar ekranı eşleştirme adımını gösteriyor — Android companion uygulamasının bağlanmak için taradığı QR kodu / kısa kodu üretme aşaması. Canlı el sıkışmayı tamamlamak ve bir telefonun ekranını yansıtmak, görüntü alınırken eşleştirilmiş fiziksel bir Android cihaz gerektirdiği için burada gösterilmiyor; tam iletişim protokolü [`docs/DEVICE_CONTROL_PROTOCOL.md`](./docs/DEVICE_CONTROL_PROTOCOL.md) içinde eksiksiz belgelenmiştir.
+
+## Mimari
 
 ```mermaid
 flowchart TB
     NGINX[nginx — reverse proxy]
     FE[Frontend — React + TS + Vite]
     BE[Backend — FastAPI + async SQLAlchemy]
-    PG[(PostgreSQL<br/>primary store)]
-    REDIS[(Redis<br/>cache / queue / rate limit)]
-    WORKER[Background worker<br/>emails, webhooks, jobs]
-    EXT[[External integrations<br/>IP intel · reputation · email · domain intel<br/>all adapter-based & mockable]]
+    PG[(PostgreSQL<br/>ana veri deposu)]
+    REDIS[(Redis<br/>cache / kuyruk / hız sınırı)]
+    WORKER[Arka plan worker'ı<br/>e-postalar, webhook'lar, işler]
+    EXT[[Harici entegrasyonlar<br/>IP zekâsı · itibar · e-posta · alan adı zekâsı<br/>hepsi adaptör tabanlı ve mock'lanabilir]]
 
     NGINX --> FE
     NGINX --> BE
@@ -196,111 +190,111 @@ flowchart TB
     WORKER -.-> EXT
 ```
 
-Backend modules under `backend/app/`:
+`backend/app/` altındaki backend modülleri:
 
 ```text
 app/
-├── api/v1/          REST endpoints (auth, campaigns, links, analytics, tracking,
+├── api/v1/          REST uç noktaları (auth, campaigns, links, analytics, tracking,
 │                    qr, url_tools, security_center, api_keys, webhooks,
 │                    notifications, devices, dashboard)
-├── core/            config, DB session, settings
-├── models/          SQLAlchemy models
-├── schemas/         Pydantic request/response schemas
-├── services/        business logic (one service per domain)
-├── repositories/    data-access layer
-├── middleware/      rate limiting, security headers, error envelope
-├── security/        auth, RBAC, hashing, tokens
-├── analytics/       aggregation logic
-├── integrations/    provider adapters — ip_intelligence/, reputation/, email/, domain_intel/
-├── workers/         background job handlers
+├── core/            config, DB session, ayarlar
+├── models/          SQLAlchemy modelleri
+├── schemas/         Pydantic istek/yanıt şemaları
+├── services/        iş mantığı (domain başına bir servis)
+├── repositories/    veri erişim katmanı
+├── middleware/      hız sınırlama, güvenlik başlıkları, hata zarfı
+├── security/        auth, RBAC, hash'leme, token'lar
+├── analytics/       toplulaştırma mantığı
+├── integrations/    sağlayıcı adaptörleri — ip_intelligence/, reputation/, email/, domain_intel/
+├── workers/         arka plan iş işleyicileri
 └── utils/
 ```
 
-## Project structure
+## Proje yapısı
 
 ```text
 Aventrix/
-├── android/       companion Android client (device control)
-├── backend/       FastAPI application + Alembic migrations + tests
+├── android/       companion Android istemcisi (cihaz kontrolü)
+├── backend/       FastAPI uygulaması + Alembic migration'ları + testler
 ├── frontend/      React + TypeScript + Vite SPA
-├── worker/        background worker Dockerfile/entrypoint
-├── nginx/         reverse proxy config (dev + production)
-├── docker/        supporting Docker assets
-├── scripts/       dev-setup helpers, DB backup, Let's Encrypt init
+├── worker/        arka plan worker Dockerfile/entrypoint
+├── nginx/         reverse proxy config (dev + üretim)
+├── docker/        yardımcı Docker varlıkları
+├── scripts/       dev-setup yardımcıları, DB yedekleme, Let's Encrypt init
 ├── docs/          SETUP, ARCHITECTURE, DATABASE, API, SECURITY,
 │                  ENVIRONMENT, DEPLOYMENT, DEPLOY_VPS, CONTRIBUTING,
-│                  DEVICE_CONTROL_PROTOCOL
-├── docker-compose.yml       development stack
-├── docker-compose.prod.yml  production stack
+│                  DEVICE_CONTROL_PROTOCOL, screenshots/
+├── docker-compose.yml       geliştirme yığını
+├── docker-compose.prod.yml  üretim yığını
 ├── LICENSE
-└── .env.example   every configurable environment variable
+└── .env.example   yapılandırılabilir her ortam değişkeni
 ```
 
-## Tech stack
+## Teknoloji yığını
 
-**Frontend** — React 18 · TypeScript · Vite · Tailwind CSS · Radix primitives · TanStack Query · React Router
+**Frontend** — React 18 · TypeScript · Vite · Tailwind CSS · Radix primitifleri · TanStack Query · React Router
 
 **Backend** — Python · FastAPI · Pydantic · SQLAlchemy (async) · Alembic
 
-**Data** — PostgreSQL · Redis (cache, rate limiting, queue)
+**Veri** — PostgreSQL · Redis (cache, hız sınırlama, kuyruk)
 
-**Infra** — Docker Compose · nginx · a dedicated background worker service
+**Altyapı** — Docker Compose · nginx · özel bir arka plan worker servisi
 
-**Mobile** — Kotlin / Android (companion device-control client)
+**Mobil** — Kotlin / Android (companion cihaz-kontrol istemcisi)
 
-## Quick start
+## Hızlı başlangıç
 
-**With Docker (recommended):**
+**Docker ile (önerilen):**
 
 ```bash
-cp .env.example .env      # edit secrets/URLs as needed
+cp .env.example .env      # gerekirse secret'ları/URL'leri düzenle
 docker compose up
 ```
 
-Or run `scripts/dev-setup.ps1` (Windows) / `scripts/dev-setup.sh` (macOS/Linux) — it creates `.env` for you and checks whether Docker is on your PATH.
+Ya da `scripts/dev-setup.ps1` (Windows) / `scripts/dev-setup.sh` (macOS/Linux) çalıştır — senin için `.env` oluşturur ve Docker'ın PATH'te olup olmadığını kontrol eder.
 
-This brings up Postgres, Redis, the API, the background worker, the frontend dev server, and nginx. Migrations and a development admin seed run automatically on backend startup — watch the logs for a one-time printed admin password.
+Bu, Postgres, Redis, API'yi, arka plan worker'ını, frontend dev sunucusunu ve nginx'i ayağa kaldırır. Migration'lar ve bir geliştirme admin seed'i backend başlangıcında otomatik çalışır — bir kereliğine yazdırılan admin şifresi için logları izle.
 
-| Service | URL |
+| Servis | URL |
 | --- | --- |
-| App (via nginx) | http://localhost:8080 |
-| Frontend directly | http://localhost:5173 |
-| API docs (Swagger) | http://localhost:8000/api/docs |
+| Uygulama (nginx üzerinden) | http://localhost:8080 |
+| Frontend doğrudan | http://localhost:5173 |
+| API dokümanları (Swagger) | http://localhost:8000/api/docs |
 
-**Without Docker:** see [`docs/SETUP.md`](./docs/SETUP.md) for running the backend and frontend locally against your own Postgres/Redis.
+**Docker olmadan:** backend ve frontend'i kendi Postgres/Redis'ine karşı yerelde çalıştırmak için [`docs/SETUP.md`](./docs/SETUP.md) dosyasına bak.
 
-**Android client:** see [`android/README.md`](./android/README.md) to build the companion app (`./gradlew assembleDebug`).
+**Android istemcisi:** companion uygulamayı derlemek için [`android/README.md`](./android/README.md) dosyasına bak (`./gradlew assembleDebug`).
 
-## Documentation
+## Dokümantasyon
 
-| Doc | Purpose |
+| Doküman | Amaç |
 | --- | --- |
-| [SETUP.md](./docs/SETUP.md) | Docker and manual local setup |
-| [ARCHITECTURE.md](./docs/ARCHITECTURE.md) | System design, module layout, what's built vs. deferred |
-| [DATABASE.md](./docs/DATABASE.md) | Schema, indexes, retention |
-| [API.md](./docs/API.md) | Endpoint reference |
-| [SECURITY.md](./docs/SECURITY.md) | Threat model, protections, known advisories |
-| [ENVIRONMENT.md](./docs/ENVIRONMENT.md) | Every environment variable explained |
-| [DEPLOYMENT.md](./docs/DEPLOYMENT.md) | Production deployment notes and checklist |
-| [DEPLOY_VPS.md](./docs/DEPLOY_VPS.md) | Step-by-step VPS deployment |
-| [DEVICE_CONTROL_PROTOCOL.md](./docs/DEVICE_CONTROL_PROTOCOL.md) | Remote device-control signaling protocol |
-| [CONTRIBUTING.md](./docs/CONTRIBUTING.md) | Code style, testing, PR expectations |
+| [SETUP.md](./docs/SETUP.md) | Docker ve manuel yerel kurulum |
+| [ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Sistem tasarımı, modül yerleşimi, yapılan vs. ertelenen |
+| [DATABASE.md](./docs/DATABASE.md) | Şema, indeksler, saklama |
+| [API.md](./docs/API.md) | Uç nokta referansı |
+| [SECURITY.md](./docs/SECURITY.md) | Tehdit modeli, korumalar, bilinen uyarılar |
+| [ENVIRONMENT.md](./docs/ENVIRONMENT.md) | Her ortam değişkeninin açıklaması |
+| [DEPLOYMENT.md](./docs/DEPLOYMENT.md) | Üretim dağıtım notları ve kontrol listesi |
+| [DEPLOY_VPS.md](./docs/DEPLOY_VPS.md) | Adım adım VPS dağıtımı |
+| [DEVICE_CONTROL_PROTOCOL.md](./docs/DEVICE_CONTROL_PROTOCOL.md) | Uzaktan cihaz kontrolü sinyalleşme protokolü |
+| [CONTRIBUTING.md](./docs/CONTRIBUTING.md) | Kod stili, test, PR beklentileri |
 
-## Security & privacy
+## Güvenlik ve gizlilik
 
-This platform is built around a strict rule: **no covert data collection.** Every feature that touches a visitor's device or data goes through explicit consent, never a silent default. Concretely:
+Bu platform katı bir kurala göre inşa edildi: **gizli veri toplama yok.** Bir ziyaretçinin cihazına ya da verisine dokunan her özellik, sessiz bir varsayılan değil, açık bir onaydan geçer. Somut olarak:
 
-- Visitor consent is a first-class UI step before any device/browser/UTM fingerprint is captured
-- All external integrations (IP intelligence, reputation, email, domain intel) are adapter-based, configured via environment variables, and degrade gracefully with a mock provider when no key is configured — the app never crashes because a third-party key is missing
-- Outbound fetches of user-supplied URLs (link previews, domain analysis, redirect checks) are SSRF-hardened: private IP ranges, localhost, internal networks, and cloud metadata endpoints are all blocked, with timeouts, response-size limits, and redirect limits enforced
-- Authorization is checked server-side on every request (RBAC), not just hidden in the UI — no IDOR by ID-guessing
-- Passwords, JWT secrets, and API keys are never hard-coded; secrets live only in `.env` (see `.env.example`)
+- Ziyaretçi onayı, herhangi bir cihaz/tarayıcı/UTM parmak izi yakalanmadan önce birinci sınıf bir arayüz adımıdır
+- Tüm harici entegrasyonlar (IP zekâsı, itibar, e-posta, alan adı zekâsı) adaptör tabanlıdır, ortam değişkenleriyle yapılandırılır ve anahtar tanımlanmadığında bir mock sağlayıcıyla zarifçe geri düşer — uygulama üçüncü taraf bir anahtar eksik diye asla çökmez
+- Kullanıcı tarafından sağlanan URL'lerin giden istekleri (bağlantı önizlemeleri, alan adı analizi, yönlendirme kontrolleri) SSRF'ye karşı sertleştirilmiştir: özel IP aralıkları, localhost, iç ağlar ve bulut metadata uç noktaları engellenir; zaman aşımları, yanıt boyutu sınırları ve yönlendirme sınırları zorunlu kılınır
+- Yetkilendirme her istekte sunucu tarafında kontrol edilir (RBAC), sadece arayüzde gizlenmez — ID tahmin ederek IDOR yok
+- Şifreler, JWT secret'ları ve API anahtarları asla koda gömülmez; secret'lar yalnızca `.env` içinde yaşar (bkz. `.env.example`)
 
-Full threat model and known advisories live in [`docs/SECURITY.md`](./docs/SECURITY.md).
+Tam tehdit modeli ve bilinen uyarılar [`docs/SECURITY.md`](./docs/SECURITY.md) içinde.
 
-> **Responsible use only.** The recon/OSINT and Security Center tooling (subdomain enumeration, DNS/WHOIS/SSL checks, header/reputation analysis) is intended for domains and assets you own or are explicitly authorized to test.
+> **Yalnızca sorumlu kullanım.** Keşif/OSINT ve Güvenlik Merkezi araçları (alt alan adı taraması, DNS/WHOIS/SSL kontrolleri, başlık/itibar analizi) sahibi olduğun ya da açıkça test etmeye yetkili olduğun alan adları ve varlıklar için tasarlanmıştır.
 
-## Testing
+## Testler
 
 ```bash
 # Backend
@@ -310,14 +304,14 @@ cd backend && pytest
 cd frontend && npm test
 ```
 
-Tests are written alongside features, not bolted on afterward — unit coverage for auth, link generation, validation, analytics, and the IP service; integration coverage for the database, API, auth flow, and redirect system; dedicated security tests for IDOR, SSRF, and rate limiting; component/form/navigation tests on the frontend.
+Testler özelliklerle birlikte yazılır, sonradan eklenmez — auth, bağlantı üretimi, doğrulama, analitik ve IP servisi için birim testleri; veritabanı, API, auth akışı ve yönlendirme sistemi için entegrasyon testleri; IDOR, SSRF ve hız sınırlama için özel güvenlik testleri; frontend'de bileşen/form/navigasyon testleri.
 
-## Roadmap (not yet built)
+## Yol haritası (henüz yapılmadı)
 
-PDF report export · real-time SSE/WebSocket live-visitor dashboard · AI campaign/analytics assistant · full admin panel · multi-user workspaces · billing/subscriptions · CI/CD pipeline.
+PDF rapor dışa aktarma · gerçek zamanlı SSE/WebSocket canlı-ziyaretçi paneli · AI kampanya/analitik asistanı · tam admin paneli · çok kullanıcılı çalışma alanları · faturalama/abonelikler · CI/CD pipeline'ı.
 
-See [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) for the complete built-vs-deferred breakdown.
+Tam yapılan-vs-ertelenen dökümü için [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) dosyasına bak.
 
-## License
+## Lisans
 
-Released under the [MIT License](./LICENSE) — see the file for the full text.
+[MIT Lisansı](./LICENSE) altında yayınlanmıştır — tam metin için dosyaya bak.
